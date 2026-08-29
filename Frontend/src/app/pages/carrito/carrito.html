@@ -1,0 +1,78 @@
+<h1>Carrito de compras</h1>
+
+@if (carritoService.items().length === 0) {
+
+  <p>Tu carrito está vacío.</p>
+
+  <a routerLink="/">
+    Volver al catálogo
+  </a>
+
+} @else {
+
+  @for (
+    item of carritoService.items();
+    track item.producto.id_producto
+  ) {
+
+    <article>
+
+      <h2>
+        {{ item.producto.nombre }}
+      </h2>
+
+      <p>
+        Precio:
+        Q{{ item.producto.precio }}
+      </p>
+
+      <p>
+        Cantidad:
+        {{ item.cantidad }}
+      </p>
+
+      <button
+        type="button"
+        (click)="disminuir(item.producto.id_producto)"
+      >
+        -
+      </button>
+
+      <button
+        type="button"
+        (click)="aumentar(item.producto.id_producto)"
+      >
+        +
+      </button>
+
+      <button
+        type="button"
+        (click)="eliminar(item.producto.id_producto)"
+      >
+        Eliminar
+      </button>
+
+      <p>
+        Subtotal:
+        Q{{ +item.producto.precio * item.cantidad }}
+      </p>
+
+    </article>
+
+  }
+
+  <h2>
+    Total: Q{{ carritoService.total() }}
+  </h2>
+  <a routerLink="/checkout">
+  Finalizar compra
+</a>
+
+  <button
+    type="button"
+    (click)="vaciar()"
+  >
+    Vaciar carrito
+  </button>
+
+}

@@ -1,0 +1,108 @@
+<section>
+
+  <a routerLink="/admin/pedidos">
+    Volver a pedidos
+  </a>
+
+
+  @if (cargando()) {
+    <p>Cargando pedido...</p>
+  }
+
+
+  @if (error()) {
+    <p>{{ error() }}</p>
+  }
+
+
+  @if (pedido(); as pedido) {
+
+    <h1>
+      Pedido #{{ pedido.id_pedido }}
+    </h1>
+
+
+    <p>
+      <strong>Cliente:</strong>
+      {{ pedido.nombre_cliente }}
+    </p>
+
+    <p>
+      <strong>Teléfono:</strong>
+      {{ pedido.telefono }}
+    </p>
+
+    <p>
+      <strong>Dirección:</strong>
+      {{ pedido.direccion_entrega }}
+    </p>
+
+    <p>
+      <strong>Estado:</strong>
+      {{ pedido.estado }}
+    </p>
+
+    <p>
+      <strong>Observaciones:</strong>
+      {{ pedido.observaciones || 'Sin observaciones' }}
+    </p>
+
+
+    <h2>Productos</h2>
+
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+          <th>Subtotal</th>
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        @for (
+          detalle of pedido.detalles;
+          track detalle.id_detalle
+        ) {
+
+          <tr>
+
+            <td>
+              {{ obtenerNombreProducto(detalle.id_producto) }}
+            </td>
+
+            <td>
+              {{ detalle.cantidad }}
+            </td>
+
+            <td>
+              Q{{ detalle.precio_unitario }}
+            </td>
+
+            <td>
+              Q{{ detalle.subtotal }}
+            </td>
+
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+
+    <h2>
+      Total: Q{{ pedido.total }}
+    </h2>
+
+  }
+
+</section>

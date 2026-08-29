@@ -1,0 +1,22 @@
+<nav>
+
+  <a
+    class="marca"
+    routerLink="/"
+  >
+    Bisutería
+  </a>
+
+  <div class="menu">
+
+    <a routerLink="/">
+      Catálogo
+    </a>
+
+    <a routerLink="/carrito">
+      Carrito ({{ carritoService.cantidadTotal() }})
+    </a>
+
+  </div>
+
+</nav>

@@ -1,0 +1,46 @@
+:host {
+  display: block;
+  padding: 40px;
+}
+
+section {
+  max-width: 600px;
+  margin: auto;
+}
+
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+form {
+  padding: 30px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+}
+
+form div {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+textarea {
+  min-height: 100px;
+}
+
+button {
+  padding: 12px 20px;
+}

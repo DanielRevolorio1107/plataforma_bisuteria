@@ -1,0 +1,211 @@
+<section>
+
+  <div class="encabezado">
+
+    <h1>Nuevo producto</h1>
+
+    <a routerLink="/admin/productos">
+      Volver
+    </a>
+
+  </div>
+
+
+  <form
+    (ngSubmit)="guardarProducto()"
+  >
+
+    <div>
+
+      <label for="categoria">
+        Categoría
+      </label>
+
+      <select
+        id="categoria"
+        name="categoria"
+        [(ngModel)]="idCategoria"
+        required
+      >
+
+        <option
+          [ngValue]="null"
+        >
+          Selecciona una categoría
+        </option>
+
+        @for (
+          categoria of categorias();
+          track categoria.id_categoria
+        ) {
+
+          <option
+            [ngValue]="categoria.id_categoria"
+          >
+            {{ categoria.nombre }}
+          </option>
+
+        }
+
+      </select>
+
+    </div>
+
+
+    <div>
+
+      <label for="codigo">
+        Código
+      </label>
+
+      <input
+        id="codigo"
+        type="text"
+        name="codigo"
+        [(ngModel)]="codigo"
+        required
+      >
+
+    </div>
+
+
+    <div>
+
+      <label for="nombre">
+        Nombre
+      </label>
+
+      <input
+        id="nombre"
+        type="text"
+        name="nombre"
+        [(ngModel)]="nombre"
+        required
+      >
+
+    </div>
+
+
+    <div>
+
+      <label for="descripcion">
+        Descripción
+      </label>
+
+      <textarea
+        id="descripcion"
+        name="descripcion"
+        [(ngModel)]="descripcion"
+      ></textarea>
+
+    </div>
+
+
+    <div>
+
+      <label for="material">
+        Material
+      </label>
+
+      <input
+        id="material"
+        type="text"
+        name="material"
+        [(ngModel)]="material"
+      >
+
+    </div>
+
+
+    <div>
+
+      <label for="color">
+        Color
+      </label>
+
+      <input
+        id="color"
+        type="text"
+        name="color"
+        [(ngModel)]="color"
+      >
+
+    </div>
+
+
+    <div>
+
+      <label for="estilo">
+        Estilo
+      </label>
+
+      <input
+        id="estilo"
+        type="text"
+        name="estilo"
+        [(ngModel)]="estilo"
+      >
+
+    </div>
+
+
+    <div>
+
+      <label for="precio">
+        Precio
+      </label>
+
+      <input
+        id="precio"
+        type="number"
+        name="precio"
+        [(ngModel)]="precio"
+        min="0"
+        step="0.01"
+        required
+      >
+
+    </div>
+
+
+    <div>
+
+      <label for="imagen">
+        URL de imagen
+      </label>
+
+      <input
+        id="imagen"
+        type="text"
+        name="imagen"
+        [(ngModel)]="imagenUrl"
+      >
+
+    </div>
+
+
+    @if (error()) {
+
+      <p>
+        {{ error() }}
+      </p>
+
+    }
+
+
+    <button
+      type="submit"
+      [disabled]="guardando()"
+    >
+
+      @if (guardando()) {
+        Guardando...
+      } @else {
+        Guardar producto
+      }
+
+    </button>
+
+  </form>
+
+</section>

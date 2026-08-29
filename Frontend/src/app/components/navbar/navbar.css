@@ -1,0 +1,24 @@
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 40px;
+  border-bottom: 1px solid #ddd;
+}
+
+.marca {
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #222;
+}
+
+.menu {
+  display: flex;
+  gap: 25px;
+}
+
+.menu a {
+  text-decoration: none;
+  color: #333;
+}

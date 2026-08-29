@@ -1,0 +1,115 @@
+<section>
+
+<div class="encabezado">
+
+  <div>
+    <h1>Productos</h1>
+
+    <p>
+      Administración de productos de la tienda.
+    </p>
+  </div>
+
+  <div>
+    <a routerLink="/admin/productos/nuevo">
+      Nuevo producto
+    </a>
+
+    <a routerLink="/admin">
+      Volver al panel
+    </a>
+  </div>
+
+</div>
+
+
+  @if (cargando()) {
+
+    <p>
+      Cargando productos...
+    </p>
+
+  }
+
+
+  @if (error()) {
+
+    <p>
+      {{ error() }}
+    </p>
+
+  }
+
+
+  @if (!cargando() && productos().length === 0) {
+
+    <p>
+      No hay productos registrados.
+    </p>
+
+  }
+
+
+  @if (productos().length > 0) {
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>ID</th>
+          <th>Código</th>
+          <th>Producto</th>
+          <th>Precio</th>
+          <th>Estado</th>
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        @for (
+          producto of productos();
+          track producto.id_producto
+        ) {
+
+          <tr>
+
+            <td>
+              {{ producto.id_producto }}
+            </td>
+
+            <td>
+              {{ producto.codigo }}
+            </td>
+
+            <td>
+              {{ producto.nombre }}
+            </td>
+
+            <td>
+              Q{{ producto.precio }}
+            </td>
+
+            <td>
+
+              @if (producto.activo) {
+                Activo
+              } @else {
+                Inactivo
+              }
+
+            </td>
+
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  }
+
+</section>

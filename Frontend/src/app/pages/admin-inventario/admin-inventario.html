@@ -1,0 +1,108 @@
+<section>
+
+  <div class="encabezado">
+
+    <div>
+      <h1>Inventario</h1>
+
+      <p>
+        Control de existencias de los productos.
+      </p>
+    </div>
+
+    <a routerLink="/admin">
+      Volver al panel
+    </a>
+
+  </div>
+
+
+  @if (cargando()) {
+    <p>Cargando inventario...</p>
+  }
+
+
+  @if (error()) {
+    <p>{{ error() }}</p>
+  }
+
+
+  @if (mensaje()) {
+    <p>{{ mensaje() }}</p>
+  }
+
+
+  @if (inventario().length > 0) {
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>Producto</th>
+          <th>Stock actual</th>
+          <th>Stock mínimo</th>
+          <th>Acción</th>
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        @for (
+          item of inventario();
+          track item.id_inventario
+        ) {
+
+          <tr>
+
+            <td>
+              {{ obtenerNombreProducto(item.id_producto) }}
+            </td>
+
+
+            <td>
+
+              <input
+                type="number"
+                [(ngModel)]="item.stock_actual"
+                min="0"
+              >
+
+            </td>
+
+
+            <td>
+
+              <input
+                type="number"
+                [(ngModel)]="item.stock_minimo"
+                min="0"
+              >
+
+            </td>
+
+
+            <td>
+
+              <button
+                type="button"
+                (click)="guardar(item)"
+              >
+                Guardar
+              </button>
+
+            </td>
+
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  }
+
+</section>

@@ -1,0 +1,92 @@
+<h1>Finalizar compra</h1>
+
+@if (carritoService.items().length === 0) {
+
+  <p>Tu carrito está vacío.</p>
+
+  <a routerLink="/">
+    Volver al catálogo
+  </a>
+
+} @else {
+
+  <form
+    (ngSubmit)="realizarPedido()"
+  >
+
+    <div>
+      <label for="nombre">
+        Nombre
+      </label>
+
+      <input
+        id="nombre"
+        type="text"
+        name="nombre"
+        [(ngModel)]="nombre"
+        required
+      >
+    </div>
+
+    <div>
+      <label for="telefono">
+        Teléfono
+      </label>
+
+      <input
+        id="telefono"
+        type="text"
+        name="telefono"
+        [(ngModel)]="telefono"
+        required
+      >
+    </div>
+
+    <div>
+      <label for="direccion">
+        Dirección de entrega
+      </label>
+
+      <textarea
+        id="direccion"
+        name="direccion"
+        [(ngModel)]="direccion"
+        required
+      ></textarea>
+    </div>
+
+    <div>
+      <label for="observaciones">
+        Observaciones
+      </label>
+
+      <textarea
+        id="observaciones"
+        name="observaciones"
+        [(ngModel)]="observaciones"
+      ></textarea>
+    </div>
+
+    <h2>
+      Total:
+      Q{{ carritoService.total() }}
+    </h2>
+
+    @if (error()) {
+      <p>{{ error() }}</p>
+    }
+
+    <button
+      type="submit"
+      [disabled]="enviando()"
+    >
+      @if (enviando()) {
+        Procesando...
+      } @else {
+        Confirmar pedido
+      }
+    </button>
+
+  </form>
+
+}

@@ -1,0 +1,146 @@
+<section>
+
+  <div class="encabezado">
+
+    <div>
+      <h1>Pedidos</h1>
+
+      <p>
+        Administración de pedidos de clientes.
+      </p>
+    </div>
+
+    <a routerLink="/admin">
+      Volver al panel
+    </a>
+
+  </div>
+
+
+  @if (cargando()) {
+    <p>Cargando pedidos...</p>
+  }
+
+
+  @if (error()) {
+    <p>{{ error() }}</p>
+  }
+
+
+  @if (mensaje()) {
+    <p>{{ mensaje() }}</p>
+  }
+
+
+  @if (!cargando() && pedidos().length === 0) {
+    <p>No hay pedidos registrados.</p>
+  }
+
+
+  @if (pedidos().length > 0) {
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>Pedido</th>
+          <th>Cliente</th>
+          <th>Teléfono</th>
+          <th>Dirección</th>
+          <th>Estado</th>
+          <th>Total</th>
+          <th>Fecha</th>
+          <th>Acción</th>
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        @for (
+          pedido of pedidos();
+          track pedido.id_pedido
+        ) {
+
+          <tr>
+
+            <td>
+              #{{ pedido.id_pedido }}
+            </td>
+
+            <td>
+              {{ pedido.nombre_cliente }}
+            </td>
+
+            <td>
+              {{ pedido.telefono }}
+            </td>
+
+            <td>
+              {{ pedido.direccion_entrega }}
+            </td>
+
+            <td>
+
+              <select
+                [(ngModel)]="pedido.estado"
+              >
+
+                @for (
+                  estado of estados;
+                  track estado
+                ) {
+
+                  <option
+                    [value]="estado"
+                  >
+                    {{ estado }}
+                  </option>
+
+                }
+
+              </select>
+
+            </td>
+
+            <td>
+              Q{{ pedido.total }}
+            </td>
+
+            <td>
+              {{ pedido.fecha_pedido }}
+            </td>
+
+            <td>
+
+              <button
+                type="button"
+                (click)="guardarEstado(pedido)"
+              >
+                Guardar
+              </button>
+
+              <a
+                [routerLink]="[
+                  '/admin/pedidos',
+                  pedido.id_pedido
+                ]"
+              >
+                Ver detalle
+              </a>
+
+            </td>
+
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  }
+
+</section>

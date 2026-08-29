@@ -1,0 +1,50 @@
+@if (cargando()) {
+  <p>Cargando producto...</p>
+}
+
+@if (error()) {
+  <p>{{ error() }}</p>
+}
+
+@if (producto(); as producto) {
+
+  <section>
+
+    <h1>{{ producto.nombre }}</h1>
+
+    <p>{{ producto.descripcion }}</p>
+
+    <p>
+      <strong>Código:</strong>
+      {{ producto.codigo }}
+    </p>
+
+    <p>
+      <strong>Material:</strong>
+      {{ producto.material }}
+    </p>
+
+    <p>
+      <strong>Color:</strong>
+      {{ producto.color }}
+    </p>
+
+    <p>
+      <strong>Estilo:</strong>
+      {{ producto.estilo }}
+    </p>
+
+    <h2>
+      Q{{ producto.precio }}
+    </h2>
+
+    <button
+      type="button"
+      (click)="agregarAlCarrito(producto)"
+    >
+      Agregar al carrito
+    </button>
+
+  </section>
+
+}

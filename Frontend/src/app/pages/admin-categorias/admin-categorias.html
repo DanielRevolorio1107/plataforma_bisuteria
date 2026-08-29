@@ -1,0 +1,112 @@
+<section>
+
+  <div class="encabezado">
+
+    <div>
+      <h1>Categorías</h1>
+
+      <p>
+        Administración de categorías de productos.
+      </p>
+    </div>
+
+    <div>
+
+      <a routerLink="/admin/categorias/nueva">
+        Nueva categoría
+      </a>
+
+      <a routerLink="/admin">
+        Volver al panel
+      </a>
+
+    </div>
+
+  </div>
+
+
+  @if (cargando()) {
+
+    <p>
+      Cargando categorías...
+    </p>
+
+  }
+
+
+  @if (error()) {
+
+    <p>
+      {{ error() }}
+    </p>
+
+  }
+
+
+  @if (!cargando() && categorias().length === 0) {
+
+    <p>
+      No hay categorías registradas.
+    </p>
+
+  }
+
+
+  @if (categorias().length > 0) {
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Estado</th>
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        @for (
+          categoria of categorias();
+          track categoria.id_categoria
+        ) {
+
+          <tr>
+
+            <td>
+              {{ categoria.id_categoria }}
+            </td>
+
+            <td>
+              {{ categoria.nombre }}
+            </td>
+
+            <td>
+              {{ categoria.descripcion }}
+            </td>
+
+            <td>
+
+              @if (categoria.activo) {
+                Activa
+              } @else {
+                Inactiva
+              }
+
+            </td>
+
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  }
+
+</section>

@@ -1,0 +1,33 @@
+:host {
+  display: block;
+  padding: 30px;
+}
+
+form {
+  max-width: 600px;
+  margin: auto;
+}
+
+div {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+textarea {
+  min-height: 100px;
+}
+
+button {
+  padding: 12px 20px;
+}

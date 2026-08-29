@@ -1,0 +1,53 @@
+<section>
+
+  <h1>Panel Administrativo</h1>
+
+  <p>
+    Bienvenido al sistema de administración de la bisutería.
+  </p>
+
+
+  <div class="opciones">
+
+    <a
+      class="boton"
+      routerLink="/admin/productos"
+    >
+      Productos
+    </a>
+
+
+    <a
+      class="boton"
+      routerLink="/admin/categorias"
+    >
+      Categorías
+    </a>
+
+
+    <a
+  class="boton"
+  routerLink="/admin/inventario"
+>
+  Inventario
+</a>
+
+
+<a
+  class="boton"
+  routerLink="/admin/pedidos"
+>
+  Pedidos
+</a>
+
+  </div>
+
+
+  <button
+    type="button"
+    (click)="cerrarSesion()"
+  >
+    Cerrar sesión
+  </button>
+
+</section>
