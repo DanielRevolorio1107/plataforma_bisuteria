@@ -3,7 +3,7 @@ from decimal import Decimal
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
+from app.models import Administrador
 from app.database import get_db
 from app.models import (
     Pedido,
@@ -141,12 +141,12 @@ def crear_pedido(
             detail="Ocurrió un error al registrar el pedido"
         )
 
-@router.get(
-    "/",
-    response_model=list[PedidoResponse]
-)
+@router.get("/")
 def listar_pedidos(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    administrador: Administrador = Depends(
+        obtener_administrador_actual
+    )
 ):
     resultado = db.execute(
         select(Pedido).order_by(
@@ -156,13 +156,13 @@ def listar_pedidos(
 
     return resultado.scalars().all()
 
-@router.get(
-    "/{id_pedido}",
-    response_model=PedidoDetalleResponse
-)
+@router.get("/{id_pedido}")
 def obtener_pedido(
     id_pedido: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    administrador: Administrador = Depends(
+        obtener_administrador_actual
+    )
 ):
     pedido = db.get(Pedido, id_pedido)
 
@@ -200,7 +200,7 @@ def actualizar_estado_pedido(
     id_pedido: int,
     datos: PedidoEstadoUpdate,
     db: Session = Depends(get_db),
-    admin: Administrador = Depends(obtener_administrador_actual)
+    administrador: Administrador = Depends(obtener_administrador_actual)
 ):
     estados_validos = {
         "pendiente",

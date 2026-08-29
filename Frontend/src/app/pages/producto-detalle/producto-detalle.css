@@ -3,7 +3,7 @@
   padding: 40px;
 }
 
-section {
+.producto {
   max-width: 700px;
   margin: auto;
   padding: 30px;
@@ -11,10 +11,57 @@ section {
   border-radius: 12px;
 }
 
-h1 {
+.producto h1 {
   margin-top: 0;
 }
 
-h2 {
-  margin-top: 25px;
+.producto button {
+  padding: 12px 20px;
+  cursor: pointer;
+}
+
+
+.recomendaciones {
+  max-width: 1000px;
+  margin: 50px auto 0;
+}
+
+.recomendaciones h2 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+
+.lista-recomendaciones {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+
+.lista-recomendaciones article {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+}
+
+.lista-recomendaciones h3 {
+  margin-top: 0;
+}
+
+.imagen-detalle {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 25px;
+}
+
+.imagen-recomendacion {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
 }

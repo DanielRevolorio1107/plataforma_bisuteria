@@ -1,50 +1,190 @@
 @if (cargando()) {
-  <p>Cargando producto...</p>
+
+  <p>
+    Cargando producto...
+  </p>
+
 }
 
+
 @if (error()) {
-  <p>{{ error() }}</p>
+
+  <p>
+    {{ error() }}
+  </p>
+
 }
+
 
 @if (producto(); as producto) {
 
-  <section>
+  <section class="producto">
 
-    <h1>{{ producto.nombre }}</h1>
 
-    <p>{{ producto.descripcion }}</p>
+    @if (producto.imagen_url) {
+
+      <img
+        class="imagen-detalle"
+        [src]="producto.imagen_url"
+        [alt]="producto.nombre"
+      >
+
+    }
+
+
+    <h1>
+      {{ producto.nombre }}
+    </h1>
+
+
+    <p>
+      {{ producto.descripcion }}
+    </p>
+
 
     <p>
       <strong>Código:</strong>
       {{ producto.codigo }}
     </p>
 
+
     <p>
       <strong>Material:</strong>
       {{ producto.material }}
     </p>
+
 
     <p>
       <strong>Color:</strong>
       {{ producto.color }}
     </p>
 
+
     <p>
       <strong>Estilo:</strong>
       {{ producto.estilo }}
     </p>
 
+
     <h2>
       Q{{ producto.precio }}
     </h2>
 
+
+    @if (stockDisponible() !== null) {
+
+      <p>
+        <strong>
+          Disponibles:
+        </strong>
+
+        {{ stockDisponible() }}
+      </p>
+
+    }
+
+
     <button
       type="button"
       (click)="agregarAlCarrito(producto)"
+      [disabled]="
+        stockDisponible() === 0 ||
+        stockDisponible() === null
+      "
     >
-      Agregar al carrito
+
+      @if (stockDisponible() === null) {
+
+        Consultando stock...
+
+      } @else if (stockDisponible() === 0) {
+
+        Agotado
+
+      } @else {
+
+        Agregar al carrito
+
+      }
+
     </button>
 
+
+    @if (mensajeCarrito()) {
+
+      <p>
+        {{ mensajeCarrito() }}
+      </p>
+
+    }
+
   </section>
+
+
+  @if (recomendaciones().length > 0) {
+
+    <section class="recomendaciones">
+
+      <h2>
+        También te puede gustar
+      </h2>
+
+
+      <div class="lista-recomendaciones">
+
+        @for (
+          recomendacion of recomendaciones();
+          track recomendacion.producto.id_producto
+        ) {
+
+          <article>
+
+
+            @if (recomendacion.producto.imagen_url) {
+
+              <img
+                class="imagen-recomendacion"
+                [src]="recomendacion.producto.imagen_url"
+                [alt]="recomendacion.producto.nombre"
+              >
+
+            }
+
+
+            <h3>
+              {{ recomendacion.producto.nombre }}
+            </h3>
+
+
+            <p>
+              {{ recomendacion.producto.descripcion }}
+            </p>
+
+
+            <p>
+              <strong>
+                Q{{ recomendacion.producto.precio }}
+              </strong>
+            </p>
+
+
+            <a
+              [routerLink]="[
+                '/productos',
+                recomendacion.producto.id_producto
+              ]"
+            >
+              Ver producto
+            </a>
+
+          </article>
+
+        }
+
+      </div>
+
+    </section>
+
+  }
 
 }

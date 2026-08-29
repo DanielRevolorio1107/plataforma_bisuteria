@@ -31,6 +31,27 @@ export interface ProductoCreate {
   imagen_url: string | null;
 }
 
+export interface ProductoUpdate {
+  id_categoria?: number;
+  codigo?: string;
+  nombre?: string;
+  descripcion?: string | null;
+  material?: string | null;
+  color?: string | null;
+  estilo?: string | null;
+  precio?: number;
+  imagen_url?: string | null;
+}
+
+export interface BusquedaResultado {
+  producto: Producto;
+  similitud: number;
+}
+
+export interface DisponibilidadProducto {
+  id_producto: number;
+  stock_disponible: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -79,4 +100,59 @@ export class ProductosService {
     );
   }
 
+
+  desactivarProducto(
+    idProducto: number
+  ): Observable<Producto> {
+
+    return this.http.delete<Producto>(
+      `${this.apiUrl}${idProducto}`
+    );
+  }
+
+
+  activarProducto(
+    idProducto: number
+  ): Observable<Producto> {
+
+    return this.http.patch<Producto>(
+      `${this.apiUrl}${idProducto}/activar`,
+      {}
+    );
+  }
+
+  actualizarProducto(
+  idProducto: number,
+  producto: ProductoUpdate
+): Observable<Producto> {
+
+  return this.http.patch<Producto>(
+    `${this.apiUrl}${idProducto}`,
+    producto
+  );
+}
+
+buscarProductos(
+  consulta: string
+): Observable<BusquedaResultado[]> {
+
+  return this.http.get<BusquedaResultado[]>(
+    'http://127.0.0.1:8000/busqueda/',
+    {
+      params: {
+        q: consulta,
+        limite: 10
+      }
+    }
+  );
+}
+
+obtenerDisponibilidad(
+  idProducto: number
+): Observable<DisponibilidadProducto> {
+
+  return this.http.get<DisponibilidadProducto>(
+    `${this.apiUrl}${idProducto}/disponibilidad`
+  );
+}
 }

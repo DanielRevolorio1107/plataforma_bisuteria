@@ -1,12 +1,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
-from app.routers import categorias, productos, inventario, pedidos, administradores, auth
+from app.routers import categorias, productos, inventario, pedidos, administradores, auth, busqueda, recomendaciones
 from app.database import engine
+from app.routers import busqueda
+from fastapi.staticfiles import StaticFiles
+from app.routers import uploads
 
 app = FastAPI(
     title="API Plataforma de Bisutería",
     version="1.0.0"
+)
+
+app.mount(
+    "/media",
+    StaticFiles(directory="uploads"),
+    name="media"
 )
 
 app.add_middleware(
@@ -30,6 +39,14 @@ app.include_router(pedidos.router)
 app.include_router(administradores.router)
 
 app.include_router(auth.router)
+
+app.include_router(busqueda.router)
+
+app.include_router(recomendaciones.router)
+
+app.include_router(
+    uploads.router
+)
 
 @app.get("/")
 def inicio():

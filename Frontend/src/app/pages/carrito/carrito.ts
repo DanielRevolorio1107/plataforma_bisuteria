@@ -1,7 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { CarritoService } from '../../services/carrito.service';
+import {
+  CarritoService
+} from '../../services/carrito.service';
+
+import {
+  ProductosService
+} from '../../services/productos.service';
 
 
 @Component({
@@ -10,29 +16,136 @@ import { CarritoService } from '../../services/carrito.service';
   templateUrl: './carrito.html',
   styleUrl: './carrito.css'
 })
-export class Carrito {
+export class Carrito implements OnInit {
+
+  stocks = signal<Record<number, number>>({});
+
+  mensaje = signal('');
+
 
   constructor(
-    public carritoService: CarritoService
+    public carritoService: CarritoService,
+    private productosService: ProductosService
   ) {}
 
 
-  aumentar(idProducto: number): void {
-    this.carritoService.aumentar(idProducto);
+  ngOnInit(): void {
+    this.cargarDisponibilidades();
   }
 
 
-  disminuir(idProducto: number): void {
-    this.carritoService.disminuir(idProducto);
+  cargarDisponibilidades(): void {
+
+    for (
+      const item of this.carritoService.items()
+    ) {
+
+      const idProducto =
+        item.producto.id_producto;
+
+
+      this.productosService
+        .obtenerDisponibilidad(idProducto)
+        .subscribe({
+
+          next: (respuesta) => {
+
+            this.stocks.update(actual => ({
+              ...actual,
+              [idProducto]:
+                respuesta.stock_disponible
+            }));
+          },
+
+          error: () => {
+
+            this.stocks.update(actual => ({
+              ...actual,
+              [idProducto]: 0
+            }));
+          }
+
+        });
+    }
   }
 
 
-  eliminar(idProducto: number): void {
-    this.carritoService.eliminar(idProducto);
+  obtenerStock(
+    idProducto: number
+  ): number {
+
+    return this.stocks()[idProducto] ?? 0;
+  }
+
+
+  aumentar(
+    idProducto: number
+  ): void {
+
+    const item =
+      this.carritoService.items().find(
+        item =>
+          item.producto.id_producto ===
+          idProducto
+      );
+
+
+    if (!item) {
+      return;
+    }
+
+
+    const stock =
+      this.obtenerStock(idProducto);
+
+
+    if (item.cantidad >= stock) {
+
+      this.mensaje.set(
+        'No hay más unidades disponibles'
+      );
+
+      return;
+    }
+
+
+    this.carritoService.aumentar(
+      idProducto
+    );
+
+    this.mensaje.set('');
+  }
+
+
+  disminuir(
+    idProducto: number
+  ): void {
+
+    this.carritoService.disminuir(
+      idProducto
+    );
+
+    this.mensaje.set('');
+  }
+
+
+  eliminar(
+    idProducto: number
+  ): void {
+
+    this.carritoService.eliminar(
+      idProducto
+    );
+
+    this.mensaje.set('');
   }
 
 
   vaciar(): void {
+
     this.carritoService.vaciar();
+
+    this.mensaje.set('');
   }
+
 }

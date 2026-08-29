@@ -146,3 +146,11 @@ class TokenResponse(BaseModel):
 class CategoriaUpdate(BaseModel):
     nombre: str | None = None
     descripcion: str | None = None
+
+class BusquedaResultado(BaseModel):
+    producto: ProductoResponse
+    similitud: float
+
+class RecomendacionResultado(BaseModel):
+    producto: ProductoResponse
+    puntuacion: float

@@ -1,0 +1,85 @@
+<section>
+
+  <div class="encabezado">
+
+    <h1>Editar categoría</h1>
+
+    <a routerLink="/admin/categorias">
+      Volver
+    </a>
+
+  </div>
+
+
+  @if (cargando()) {
+
+    <p>
+      Cargando categoría...
+    </p>
+
+  } @else {
+
+
+    @if (error()) {
+
+      <p>
+        {{ error() }}
+      </p>
+
+    }
+
+
+    <form
+      (ngSubmit)="guardarCategoria()"
+    >
+
+      <div>
+
+        <label for="nombre">
+          Nombre
+        </label>
+
+        <input
+          id="nombre"
+          type="text"
+          name="nombre"
+          [(ngModel)]="nombre"
+          required
+        >
+
+      </div>
+
+
+      <div>
+
+        <label for="descripcion">
+          Descripción
+        </label>
+
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          [(ngModel)]="descripcion"
+        ></textarea>
+
+      </div>
+
+
+      <button
+        type="submit"
+        [disabled]="guardando()"
+      >
+
+        @if (guardando()) {
+          Guardando...
+        } @else {
+          Guardar cambios
+        }
+
+      </button>
+
+    </form>
+
+  }
+
+</section>

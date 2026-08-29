@@ -26,29 +26,22 @@
 
 
   @if (cargando()) {
-
-    <p>
-      Cargando categorías...
-    </p>
-
+    <p>Cargando categorías...</p>
   }
 
 
   @if (error()) {
+    <p>{{ error() }}</p>
+  }
 
-    <p>
-      {{ error() }}
-    </p>
 
+  @if (mensaje()) {
+    <p>{{ mensaje() }}</p>
   }
 
 
   @if (!cargando() && categorias().length === 0) {
-
-    <p>
-      No hay categorías registradas.
-    </p>
-
+    <p>No hay categorías registradas.</p>
   }
 
 
@@ -63,6 +56,7 @@
           <th>Nombre</th>
           <th>Descripción</th>
           <th>Estado</th>
+          <th>Acción</th>
         </tr>
 
       </thead>
@@ -95,6 +89,40 @@
                 Activa
               } @else {
                 Inactiva
+              }
+
+            </td>
+
+            <td>
+
+              <a
+                [routerLink]="[
+                  '/admin/categorias/editar',
+                  categoria.id_categoria
+                ]"
+              >
+                Editar
+              </a>
+
+
+              @if (categoria.activo) {
+
+                <button
+                  type="button"
+                  (click)="desactivar(categoria)"
+                >
+                  Desactivar
+                </button>
+
+              } @else {
+
+                <button
+                  type="button"
+                  (click)="activar(categoria)"
+                >
+                  Reactivar
+                </button>
+
               }
 
             </td>

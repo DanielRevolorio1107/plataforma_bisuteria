@@ -16,8 +16,10 @@ import {
 export class AdminCategorias implements OnInit {
 
   categorias = signal<Categoria[]>([]);
+
   cargando = signal(true);
   error = signal('');
+  mensaje = signal('');
 
 
   constructor(
@@ -26,6 +28,11 @@ export class AdminCategorias implements OnInit {
 
 
   ngOnInit(): void {
+    this.cargarCategorias();
+  }
+
+
+  cargarCategorias(): void {
 
     this.categoriasService.obtenerTodasAdmin().subscribe({
 
@@ -43,6 +50,66 @@ export class AdminCategorias implements OnInit {
       }
 
     });
+  }
+
+
+  desactivar(categoria: Categoria): void {
+
+    this.error.set('');
+    this.mensaje.set('');
+
+    this.categoriasService
+      .desactivarCategoria(categoria.id_categoria)
+      .subscribe({
+
+        next: () => {
+
+          this.mensaje.set(
+            'Categoría desactivada correctamente'
+          );
+
+          this.cargarCategorias();
+        },
+
+        error: (error) => {
+
+          this.error.set(
+            error.error?.detail ||
+            'No se pudo desactivar la categoría'
+          );
+        }
+
+      });
+  }
+
+
+  activar(categoria: Categoria): void {
+
+    this.error.set('');
+    this.mensaje.set('');
+
+    this.categoriasService
+      .activarCategoria(categoria.id_categoria)
+      .subscribe({
+
+        next: () => {
+
+          this.mensaje.set(
+            'Categoría activada correctamente'
+          );
+
+          this.cargarCategorias();
+        },
+
+        error: (error) => {
+
+          this.error.set(
+            error.error?.detail ||
+            'No se pudo activar la categoría'
+          );
+        }
+
+      });
   }
 
 }

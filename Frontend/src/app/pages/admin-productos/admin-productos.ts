@@ -16,8 +16,10 @@ import {
 export class AdminProductos implements OnInit {
 
   productos = signal<Producto[]>([]);
+
   cargando = signal(true);
   error = signal('');
+  mensaje = signal('');
 
 
   constructor(
@@ -26,23 +28,92 @@ export class AdminProductos implements OnInit {
 
 
   ngOnInit(): void {
+    this.cargarProductos();
+  }
 
-    this.productosService.obtenerTodosAdmin().subscribe({
 
-      next: (productos) => {
-        this.productos.set(productos);
-        this.cargando.set(false);
-      },
+  cargarProductos(): void {
 
-      error: () => {
-        this.error.set(
-          'No se pudieron cargar los productos'
-        );
+    this.productosService
+      .obtenerTodosAdmin()
+      .subscribe({
 
-        this.cargando.set(false);
-      }
+        next: (productos) => {
+          this.productos.set(productos);
+          this.cargando.set(false);
+        },
 
-    });
+        error: () => {
+          this.error.set(
+            'No se pudieron cargar los productos'
+          );
+
+          this.cargando.set(false);
+        }
+
+      });
+  }
+
+
+  desactivar(producto: Producto): void {
+
+    this.error.set('');
+    this.mensaje.set('');
+
+
+    this.productosService
+      .desactivarProducto(producto.id_producto)
+      .subscribe({
+
+        next: () => {
+
+          this.mensaje.set(
+            'Producto desactivado correctamente'
+          );
+
+          this.cargarProductos();
+        },
+
+        error: (error) => {
+
+          this.error.set(
+            error.error?.detail ||
+            'No se pudo desactivar el producto'
+          );
+        }
+
+      });
+  }
+
+
+  activar(producto: Producto): void {
+
+    this.error.set('');
+    this.mensaje.set('');
+
+
+    this.productosService
+      .activarProducto(producto.id_producto)
+      .subscribe({
+
+        next: () => {
+
+          this.mensaje.set(
+            'Producto activado correctamente'
+          );
+
+          this.cargarProductos();
+        },
+
+        error: (error) => {
+
+          this.error.set(
+            error.error?.detail ||
+            'No se pudo activar el producto'
+          );
+        }
+
+      });
   }
 
 }

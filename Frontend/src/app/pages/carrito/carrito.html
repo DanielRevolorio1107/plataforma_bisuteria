@@ -1,14 +1,29 @@
-<h1>Carrito de compras</h1>
+<h1>
+  Carrito de compras
+</h1>
+
+
+@if (mensaje()) {
+
+  <p>
+    {{ mensaje() }}
+  </p>
+
+}
+
 
 @if (carritoService.items().length === 0) {
 
-  <p>Tu carrito está vacío.</p>
+  <p>
+    Tu carrito está vacío.
+  </p>
 
   <a routerLink="/">
     Volver al catálogo
   </a>
 
 } @else {
+
 
   @for (
     item of carritoService.items();
@@ -21,15 +36,24 @@
         {{ item.producto.nombre }}
       </h2>
 
+
       <p>
         Precio:
         Q{{ item.producto.precio }}
       </p>
 
+
+      <p>
+        Disponibles:
+        {{ obtenerStock(item.producto.id_producto) }}
+      </p>
+
+
       <p>
         Cantidad:
         {{ item.cantidad }}
       </p>
+
 
       <button
         type="button"
@@ -38,12 +62,18 @@
         -
       </button>
 
+
       <button
         type="button"
         (click)="aumentar(item.producto.id_producto)"
+        [disabled]="
+          item.cantidad >=
+          obtenerStock(item.producto.id_producto)
+        "
       >
         +
       </button>
+
 
       <button
         type="button"
@@ -52,21 +82,25 @@
         Eliminar
       </button>
 
+
       <p>
         Subtotal:
-        Q{{ +item.producto.precio * item.cantidad }}
+        Q{{
+          +item.producto.precio *
+          item.cantidad
+        }}
       </p>
 
     </article>
 
   }
 
+
   <h2>
-    Total: Q{{ carritoService.total() }}
+    Total:
+    Q{{ carritoService.total() }}
   </h2>
-  <a routerLink="/checkout">
-  Finalizar compra
-</a>
+
 
   <button
     type="button"
@@ -74,5 +108,10 @@
   >
     Vaciar carrito
   </button>
+
+
+  <a routerLink="/checkout">
+    Finalizar compra
+  </a>
 
 }

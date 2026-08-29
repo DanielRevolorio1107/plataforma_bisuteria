@@ -1,52 +1,47 @@
 <section>
 
-<div class="encabezado">
+  <div class="encabezado">
 
-  <div>
-    <h1>Productos</h1>
+    <div>
+      <h1>Productos</h1>
 
-    <p>
-      Administración de productos de la tienda.
-    </p>
+      <p>
+        Administración de productos de la tienda.
+      </p>
+    </div>
+
+    <div>
+
+      <a routerLink="/admin/productos/nuevo">
+        Nuevo producto
+      </a>
+
+      <a routerLink="/admin">
+        Volver al panel
+      </a>
+
+    </div>
+
   </div>
-
-  <div>
-    <a routerLink="/admin/productos/nuevo">
-      Nuevo producto
-    </a>
-
-    <a routerLink="/admin">
-      Volver al panel
-    </a>
-  </div>
-
-</div>
 
 
   @if (cargando()) {
-
-    <p>
-      Cargando productos...
-    </p>
-
+    <p>Cargando productos...</p>
   }
 
 
   @if (error()) {
+    <p>{{ error() }}</p>
+  }
 
-    <p>
-      {{ error() }}
-    </p>
 
+  @if (mensaje()) {
+    <p>{{ mensaje() }}</p>
   }
 
 
   @if (!cargando() && productos().length === 0) {
-
-    <p>
-      No hay productos registrados.
-    </p>
-
+    <p>No hay productos registrados.</p>
   }
 
 
@@ -62,6 +57,7 @@
           <th>Producto</th>
           <th>Precio</th>
           <th>Estado</th>
+          <th>Acción</th>
         </tr>
 
       </thead>
@@ -98,6 +94,40 @@
                 Activo
               } @else {
                 Inactivo
+              }
+
+            </td>
+
+            <td>
+
+              <a
+                [routerLink]="[
+                  '/admin/productos/editar',
+                  producto.id_producto
+                ]"
+              >
+                Editar
+              </a>
+
+
+              @if (producto.activo) {
+
+                <button
+                  type="button"
+                  (click)="desactivar(producto)"
+                >
+                  Desactivar
+                </button>
+
+              } @else {
+
+                <button
+                  type="button"
+                  (click)="activar(producto)"
+                >
+                  Reactivar
+                </button>
+
               }
 
             </td>

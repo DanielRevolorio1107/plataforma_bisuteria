@@ -1,23 +1,91 @@
 <h1>Catálogo de Bisutería</h1>
 
+
+<section class="busqueda">
+
+  <input
+    type="text"
+    [(ngModel)]="consulta"
+    placeholder="¿Qué estás buscando?"
+    (keyup.enter)="buscar()"
+  >
+
+  <button
+    type="button"
+    (click)="buscar()"
+    [disabled]="buscando()"
+  >
+
+    @if (buscando()) {
+      Buscando...
+    } @else {
+      Buscar
+    }
+
+  </button>
+
+
+  @if (busquedaActiva()) {
+
+    <button
+      type="button"
+      (click)="limpiarBusqueda()"
+    >
+      Ver todos
+    </button>
+
+  }
+
+</section>
+
+
+@if (busquedaActiva()) {
+
+  <p>
+    Resultados para:
+    <strong>{{ consulta }}</strong>
+  </p>
+
+}
+
+
 @if (cargando()) {
   <p>Cargando productos...</p>
 }
+
 
 @if (error()) {
   <p>{{ error() }}</p>
 }
 
-@if (!cargando() && productos().length === 0) {
-  <p>No hay productos disponibles.</p>
+
+@if (
+  !cargando() &&
+  !buscando() &&
+  productos().length === 0
+) {
+
+  <p>
+    No se encontraron productos relacionados.
+  </p>
+
 }
 
-@for (producto of productos(); track producto.id_producto) {
+
+@for (
+  producto of productos();
+  track producto.id_producto
+) {
 
   <article>
-    <h2>{{ producto.nombre }}</h2>
 
-    <p>{{ producto.descripcion }}</p>
+    <h2>
+      {{ producto.nombre }}
+    </h2>
+
+    <p>
+      {{ producto.descripcion }}
+    </p>
 
     <p>
       <strong>Material:</strong>
@@ -39,9 +107,15 @@
       Q{{ producto.precio }}
     </p>
 
-    <a [routerLink]="['/productos', producto.id_producto]">
+    <a
+      [routerLink]="[
+        '/productos',
+        producto.id_producto
+      ]"
+    >
       Ver producto
     </a>
+
   </article>
 
 }

@@ -14,6 +14,8 @@ import { AdminInventario } from './pages/admin-inventario/admin-inventario';
 import { AdminPedidos } from './pages/admin-pedidos/admin-pedidos';
 import { AdminPedidoDetalle } from './pages/admin-pedido-detalle/admin-pedido-detalle';
 import { AdminCategoriaNueva } from './pages/admin-categoria-nueva/admin-categoria-nueva';
+import { AdminCategoriaEditar } from './pages/admin-categoria-editar/admin-categoria-editar';
+import { AdminProductoEditar } from './pages/admin-producto-editar/admin-producto-editar';
 
 export const routes: Routes = [
   {
@@ -78,6 +80,16 @@ export const routes: Routes = [
 {
   path: 'admin/categorias/nueva',
   component: AdminCategoriaNueva,
+  canActivate: [authGuard]
+},
+{
+  path: 'admin/categorias/editar/:id',
+  component: AdminCategoriaEditar,
+  canActivate: [authGuard]
+},
+{
+  path: 'admin/productos/editar/:id',
+  component: AdminProductoEditar,
   canActivate: [authGuard]
 }
 ];

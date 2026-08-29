@@ -6,7 +6,7 @@ from app.database import get_db
 from app.models import Categoria, Producto, Inventario, Administrador
 from app.schemas import ProductoCreate, ProductoResponse, ProductoUpdate
 from app.security import obtener_administrador_actual
-
+from app.models import Producto, Inventario
 
 router = APIRouter(
     prefix="/productos",
@@ -213,3 +213,35 @@ def desactivar_producto(
     db.refresh(producto)
 
     return producto
+
+@router.get("/{id_producto}/disponibilidad")
+def obtener_disponibilidad(
+    id_producto: int,
+    db: Session = Depends(get_db)
+):
+
+    producto = db.get(
+        Producto,
+        id_producto
+    )
+
+    if not producto or not producto.activo:
+        raise HTTPException(
+            status_code=404,
+            detail="Producto no encontrado"
+        )
+
+    inventario = db.query(Inventario).filter(
+        Inventario.id_producto == id_producto
+    ).first()
+
+    if not inventario:
+        return {
+            "id_producto": id_producto,
+            "stock_disponible": 0
+        }
+
+    return {
+        "id_producto": id_producto,
+        "stock_disponible": inventario.stock_actual
+    }
