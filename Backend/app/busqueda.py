@@ -17,10 +17,14 @@ cache_embeddings = {}
 cache_lock = Lock()
 
 
-def crear_texto_producto(producto) -> str:
+def crear_texto_producto(
+    producto,
+    nombre_categoria: str | None = None
+) -> str:
 
     campos = [
         producto.nombre,
+        nombre_categoria,
         producto.descripcion,
         producto.material,
         producto.color,
@@ -37,11 +41,17 @@ def crear_texto_producto(producto) -> str:
 
 
 def obtener_vectores_productos(
-    productos: list
+    productos: list,
+    categorias_por_producto: dict[int, str]
 ):
 
     textos_productos = [
-        crear_texto_producto(producto)
+        crear_texto_producto(
+            producto,
+            categorias_por_producto.get(
+                producto.id_producto
+            )
+        )
         for producto in productos
     ]
 
@@ -59,6 +69,7 @@ def obtener_vectores_productos(
         for id_producto in ids_cache:
 
             if id_producto not in ids_actuales:
+
                 del cache_embeddings[
                     id_producto
                 ]
@@ -120,6 +131,7 @@ def obtener_vectores_productos(
 def buscar_productos_semanticos(
     consulta: str,
     productos: list,
+    categorias_por_producto: dict[int, str],
     limite: int = 5
 ):
 
@@ -130,7 +142,8 @@ def buscar_productos_semanticos(
 
     vectores_productos = (
         obtener_vectores_productos(
-            productos
+            productos,
+            categorias_por_producto
         )
     )
 

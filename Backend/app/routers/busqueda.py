@@ -32,8 +32,11 @@ def buscar_productos(
     db: Session = Depends(get_db)
 ):
 
-    productos = db.scalars(
-        select(Producto)
+    resultado = db.execute(
+        select(
+            Producto,
+            Categoria.nombre
+        )
         .join(
             Categoria,
             Producto.id_categoria
@@ -45,9 +48,22 @@ def buscar_productos(
         )
     ).all()
 
+    productos = [
+        fila[0]
+        for fila in resultado
+    ]
+
+    categorias_por_producto = {
+        fila[0].id_producto: fila[1]
+        for fila in resultado
+    }
+
     resultados = buscar_productos_semanticos(
         consulta=q,
-        productos=list(productos),
+        productos=productos,
+        categorias_por_producto=(
+            categorias_por_producto
+        ),
         limite=limite
     )
 
