@@ -1,145 +1,290 @@
-<section>
+<section class="pagina-admin">
 
-  <div class="encabezado">
+  <header class="cabecera">
 
     <div>
-      <h1>Pedidos</h1>
+
+      <span class="subtitulo">
+        Ventas
+      </span>
+
+      <h1>
+        Pedidos
+      </h1>
 
       <p>
-        Administración de pedidos de clientes.
+        Consulta y administra los pedidos realizados por los clientes.
       </p>
+
     </div>
 
-    <a routerLink="/admin">
-      Volver al panel
+    <a
+      routerLink="/admin"
+      class="volver"
+    >
+      ← Volver al panel
     </a>
 
-  </div>
-
-
-  @if (cargando()) {
-    <p>Cargando pedidos...</p>
-  }
+  </header>
 
 
   @if (error()) {
-    <p>{{ error() }}</p>
+
+    <div class="mensaje error">
+      {{ error() }}
+    </div>
+
   }
 
 
   @if (mensaje()) {
-    <p>{{ mensaje() }}</p>
+
+    <div class="mensaje exito">
+      {{ mensaje() }}
+    </div>
+
   }
 
 
-  @if (!cargando() && pedidos().length === 0) {
-    <p>No hay pedidos registrados.</p>
+  @if (cargando()) {
+
+    <div class="estado-carga">
+      Cargando pedidos...
+    </div>
+
   }
 
 
-  @if (pedidos().length > 0) {
+  @if (
+    !cargando() &&
+    pedidos().length === 0
+  ) {
 
-    <table>
+    <div class="sin-pedidos">
 
-      <thead>
+      <div class="icono-vacio">
+        ♢
+      </div>
 
-        <tr>
-          <th>Pedido</th>
-          <th>Cliente</th>
-          <th>Teléfono</th>
-          <th>Dirección</th>
-          <th>Estado</th>
-          <th>Total</th>
-          <th>Fecha</th>
-          <th>Acción</th>
-        </tr>
+      <h2>
+        No hay pedidos registrados
+      </h2>
 
-      </thead>
+      <p>
+        Los pedidos realizados por los clientes
+        aparecerán en esta sección.
+      </p>
+
+    </div>
+
+  }
 
 
-      <tbody>
+  @if (
+    !cargando() &&
+    pedidos().length > 0
+  ) {
 
-        @for (
-          pedido of pedidos();
-          track pedido.id_pedido
-        ) {
+    <div class="tabla-contenedor">
+
+      <table>
+
+        <thead>
 
           <tr>
 
-            <td>
-              #{{ pedido.id_pedido }}
-            </td>
+            <th>Pedido</th>
 
-            <td>
-              {{ pedido.nombre_cliente }}
-            </td>
+            <th>Cliente</th>
 
-            <td>
-              {{ pedido.telefono }}
-            </td>
+            <th>Contacto</th>
 
-            <td>
-              {{ pedido.direccion_entrega }}
-            </td>
+            <th>Dirección</th>
 
-            <td>
+            <th>Estado</th>
 
-              <select
-                [(ngModel)]="pedido.estado"
-              >
+            <th>Total</th>
 
-                @for (
-                  estado of estados;
-                  track estado
-                ) {
+            <th>Fecha</th>
 
-                  <option
-                    [value]="estado"
-                  >
-                    {{ estado }}
-                  </option>
-
-                }
-
-              </select>
-
-            </td>
-
-            <td>
-              Q{{ pedido.total }}
-            </td>
-
-            <td>
-              {{ pedido.fecha_pedido }}
-            </td>
-
-            <td>
-
-              <button
-                type="button"
-                (click)="guardarEstado(pedido)"
-              >
-                Guardar
-              </button>
-
-              <a
-                [routerLink]="[
-                  '/admin/pedidos',
-                  pedido.id_pedido
-                ]"
-              >
-                Ver detalle
-              </a>
-
-            </td>
+            <th>Acciones</th>
 
           </tr>
 
-        }
+        </thead>
 
-      </tbody>
 
-    </table>
+        <tbody>
+
+          @for (
+            pedido of pedidos();
+            track pedido.id_pedido
+          ) {
+
+            <tr>
+
+
+              <td>
+
+                <span class="numero-pedido">
+                  #{{ pedido.id_pedido }}
+                </span>
+
+              </td>
+
+
+              <td>
+
+                <div class="cliente">
+
+                  <div class="avatar">
+
+                    {{
+                      pedido.nombre_cliente
+                        .charAt(0)
+                        .toUpperCase()
+                    }}
+
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      {{ pedido.nombre_cliente }}
+                    </strong>
+
+                    <span>
+                      Cliente
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+
+              <td>
+
+                <span class="telefono">
+                  {{ pedido.telefono }}
+                </span>
+
+              </td>
+
+
+              <td>
+
+                <p class="direccion">
+                  {{ pedido.direccion_entrega }}
+                </p>
+
+              </td>
+
+
+              <td>
+
+                <select
+                  class="selector-estado"
+                  [(ngModel)]="pedido.estado"
+                  [disabled]="estadoFinal(pedido)"
+                  [class.pendiente]="pedido.estado === 'pendiente'"
+                  [class.confirmado]="pedido.estado === 'confirmado'"
+                  [class.preparando]="pedido.estado === 'preparando'"
+                  [class.enviado]="pedido.estado === 'enviado'"
+                  [class.entregado]="pedido.estado === 'entregado'"
+                  [class.cancelado]="pedido.estado === 'cancelado'"
+                >
+
+                  @for (
+                    estado of estadosDisponibles(pedido);
+                    track estado
+                  ) {
+
+                    <option
+                      [value]="estado"
+                    >
+                      {{ estado }}
+                    </option>
+
+                  }
+
+                </select>
+
+              </td>
+
+
+              <td>
+
+                <strong class="total">
+                  Q{{ pedido.total }}
+                </strong>
+
+              </td>
+
+
+              <td>
+
+                <span class="fecha">
+                  {{ pedido.fecha_pedido }}
+                </span>
+
+              </td>
+
+
+              <td>
+
+                <div class="acciones">
+
+                  <button
+                    type="button"
+                    class="guardar"
+                    (click)="guardarEstado(pedido)"
+                    [disabled]="!puedeGuardar(pedido)"
+                  >
+                    Guardar
+                  </button>
+
+
+                  <a
+                    class="detalle"
+                    [routerLink]="[
+                      '/admin/pedidos',
+                      pedido.id_pedido
+                    ]"
+                  >
+                    Ver detalle
+                  </a>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <div class="ayuda-estados">
+
+      <span>
+        Gestión de pedidos
+      </span>
+
+      <p>
+        Selecciona el siguiente estado disponible
+        y presiona
+        <strong>Guardar</strong>
+        para registrar el cambio.
+      </p>
+
+    </div>
 
   }
 

@@ -16,6 +16,10 @@ import {
   ProductosService
 } from '../../services/productos.service';
 
+import {
+  UploadsService
+} from '../../services/uploads.service';
+
 
 @Component({
   selector: 'app-admin-producto-editar',
@@ -40,7 +44,9 @@ export class AdminProductoEditar implements OnInit {
   color = '';
   estilo = '';
   precio: number | null = null;
-  imagenUrl = '';
+
+  imagenUrl: string | null = null;
+  archivoImagen: File | null = null;
 
   cargando = signal(true);
   guardando = signal(false);
@@ -51,7 +57,8 @@ export class AdminProductoEditar implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private productosService: ProductosService,
-    private categoriasService: CategoriasService
+    private categoriasService: CategoriasService,
+    private uploadsService: UploadsService
   ) {}
 
 
@@ -60,6 +67,7 @@ export class AdminProductoEditar implements OnInit {
     this.idProducto = Number(
       this.route.snapshot.paramMap.get('id')
     );
+
 
     this.categoriasService
       .obtenerTodasAdmin()
@@ -78,15 +86,32 @@ export class AdminProductoEditar implements OnInit {
 
         next: (producto) => {
 
-          this.idCategoria = producto.id_categoria;
-          this.codigo = producto.codigo;
-          this.nombre = producto.nombre;
-          this.descripcion = producto.descripcion || '';
-          this.material = producto.material || '';
-          this.color = producto.color || '';
-          this.estilo = producto.estilo || '';
-          this.precio = Number(producto.precio);
-          this.imagenUrl = producto.imagen_url || '';
+          this.idCategoria =
+            producto.id_categoria;
+
+          this.codigo =
+            producto.codigo;
+
+          this.nombre =
+            producto.nombre;
+
+          this.descripcion =
+            producto.descripcion || '';
+
+          this.material =
+            producto.material || '';
+
+          this.color =
+            producto.color || '';
+
+          this.estilo =
+            producto.estilo || '';
+
+          this.precio =
+            Number(producto.precio);
+
+          this.imagenUrl =
+            producto.imagen_url;
 
           this.cargando.set(false);
         },
@@ -101,6 +126,71 @@ export class AdminProductoEditar implements OnInit {
         }
 
       });
+  }
+
+
+  seleccionarImagen(
+    event: Event
+  ): void {
+
+    const input =
+      event.target as HTMLInputElement;
+
+    const archivo =
+      input.files?.[0];
+
+
+    if (!archivo) {
+      this.archivoImagen = null;
+      return;
+    }
+
+
+    const tiposPermitidos = [
+      'image/jpeg',
+      'image/png',
+      'image/webp'
+    ];
+
+
+    if (
+      !tiposPermitidos.includes(
+        archivo.type
+      )
+    ) {
+
+      this.error.set(
+        'La imagen debe ser JPG, PNG o WEBP'
+      );
+
+      input.value = '';
+
+      this.archivoImagen = null;
+
+      return;
+    }
+
+
+    if (
+      archivo.size >
+      5 * 1024 * 1024
+    ) {
+
+      this.error.set(
+        'La imagen no puede superar los 5 MB'
+      );
+
+      input.value = '';
+
+      this.archivoImagen = null;
+
+      return;
+    }
+
+
+    this.archivoImagen = archivo;
+
+    this.error.set('');
   }
 
 
@@ -131,11 +221,58 @@ export class AdminProductoEditar implements OnInit {
     }
 
 
+    this.guardando.set(true);
+    this.error.set('');
+
+
+    if (this.archivoImagen) {
+
+      this.uploadsService
+        .subirImagen(this.archivoImagen)
+        .subscribe({
+
+          next: (respuesta) => {
+
+            this.actualizarProducto(
+              respuesta.imagen_url
+            );
+          },
+
+          error: (error) => {
+
+            this.guardando.set(false);
+
+            this.error.set(
+              error.error?.detail ||
+              'No se pudo subir la nueva imagen'
+            );
+          }
+
+        });
+
+    } else {
+
+      this.actualizarProducto(
+        this.imagenUrl
+      );
+    }
+  }
+
+
+  private actualizarProducto(
+    imagenUrl: string | null
+  ): void {
+
     const producto: ProductoUpdate = {
 
-      id_categoria: this.idCategoria,
-      codigo: this.codigo.trim(),
-      nombre: this.nombre.trim(),
+      id_categoria:
+        this.idCategoria!,
+
+      codigo:
+        this.codigo.trim(),
+
+      nombre:
+        this.nombre.trim(),
 
       descripcion:
         this.descripcion.trim() || null,
@@ -149,16 +286,12 @@ export class AdminProductoEditar implements OnInit {
       estilo:
         this.estilo.trim() || null,
 
-      precio: this.precio,
+      precio:
+        this.precio!,
 
       imagen_url:
-        this.imagenUrl.trim() || null
-
+        imagenUrl
     };
-
-
-    this.guardando.set(true);
-    this.error.set('');
 
 
     this.productosService

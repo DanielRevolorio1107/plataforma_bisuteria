@@ -1,24 +1,182 @@
-nav {
+.navbar {
+  min-height: 82px;
+
+  padding:
+    10px 6%;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 40px;
-  border-bottom: 1px solid #ddd;
+
+  background:
+    var(--marfil);
+
+  border-bottom:
+    1px solid var(--borde);
+
+  box-shadow:
+    0 3px 16px
+    rgba(55, 20, 20, 0.06);
+
+  position: sticky;
+  top: 0;
+
+  z-index: 100;
 }
 
+
 .marca {
-  font-size: 24px;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
   text-decoration: none;
-  color: #222;
 }
+
+
+.logo {
+  width: 58px;
+  height: 58px;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  border:
+    2px solid var(--oro);
+
+  box-shadow:
+    0 3px 10px
+    rgba(0, 0, 0, 0.12);
+}
+
+
+.nombre-marca {
+  display: flex;
+  flex-direction: column;
+
+  line-height: 1;
+}
+
+
+.nombre-marca span {
+  font-family:
+    Georgia,
+    'Times New Roman',
+    serif;
+
+  font-size: 25px;
+
+  letter-spacing: 3px;
+
+  color:
+    var(--vino);
+
+  font-weight: bold;
+}
+
+
+.nombre-marca small {
+  margin-top: 5px;
+
+  color:
+    var(--oro);
+
+  font-size: 10px;
+
+  letter-spacing: 5px;
+}
+
 
 .menu {
   display: flex;
-  gap: 25px;
+  align-items: center;
+
+  gap: 32px;
 }
 
-.menu a {
+
+.enlace,
+.carrito {
+  color:
+    var(--vino);
+
   text-decoration: none;
-  color: #333;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+
+.enlace:hover,
+.carrito:hover {
+  color:
+    var(--oro);
+}
+
+
+.carrito {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+.contador {
+  min-width: 25px;
+  height: 25px;
+
+  padding: 0 7px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background:
+    var(--vino);
+
+  color: white;
+
+  border-radius: 50px;
+
+  font-size: 12px;
+}
+
+
+@media (max-width: 600px) {
+
+  .navbar {
+    padding:
+      10px 18px;
+  }
+
+
+  .logo {
+    width: 48px;
+    height: 48px;
+  }
+
+
+  .nombre-marca span {
+    font-size: 19px;
+  }
+
+
+  .nombre-marca small {
+    font-size: 8px;
+  }
+
+
+  .menu {
+    gap: 15px;
+  }
+
+
+  .enlace {
+    display: none;
+  }
+
 }

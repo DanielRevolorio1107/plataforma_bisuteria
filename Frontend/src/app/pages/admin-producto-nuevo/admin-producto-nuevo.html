@@ -1,210 +1,338 @@
-<section>
+<section class="pagina-producto">
 
-  <div class="encabezado">
+  <header class="cabecera">
 
-    <h1>Nuevo producto</h1>
+    <div>
 
-    <a routerLink="/admin/productos">
-      Volver
+      <span class="subtitulo">
+        Catálogo
+      </span>
+
+      <h1>
+        Nuevo producto
+      </h1>
+
+      <p>
+        Agrega una nueva pieza al catálogo de ZAS Jewel.
+      </p>
+
+    </div>
+
+
+    <a
+      routerLink="/admin/productos"
+      class="volver"
+    >
+      ← Volver a productos
     </a>
 
-  </div>
+  </header>
 
 
   <form
+    class="formulario"
     (ngSubmit)="guardarProducto()"
   >
 
-    <div>
+    <div class="titulo-formulario">
 
-      <label for="categoria">
-        Categoría
-      </label>
+      <span>
+        Información del producto
+      </span>
 
-      <select
-        id="categoria"
-        name="categoria"
-        [(ngModel)]="idCategoria"
-        required
-      >
+      <h2>
+        Datos generales
+      </h2>
 
-        <option
-          [ngValue]="null"
+      <p>
+        Completa la información que se mostrará
+        en el catálogo de la tienda.
+      </p>
+
+    </div>
+
+
+    <div class="grid-formulario">
+
+
+      <div class="campo">
+
+        <label for="categoria">
+          Categoría *
+        </label>
+
+        <select
+          id="categoria"
+          name="categoria"
+          [(ngModel)]="idCategoria"
+          required
         >
-          Selecciona una categoría
-        </option>
-
-        @for (
-          categoria of categorias();
-          track categoria.id_categoria
-        ) {
 
           <option
-            [ngValue]="categoria.id_categoria"
+            [ngValue]="null"
           >
-            {{ categoria.nombre }}
+            Selecciona una categoría
           </option>
+
+          @for (
+            categoria of categorias();
+            track categoria.id_categoria
+          ) {
+
+            <option
+              [ngValue]="categoria.id_categoria"
+            >
+              {{ categoria.nombre }}
+            </option>
+
+          }
+
+        </select>
+
+      </div>
+
+
+      <div class="campo">
+
+        <label for="codigo">
+          Código *
+        </label>
+
+        <input
+          id="codigo"
+          type="text"
+          name="codigo"
+          [(ngModel)]="codigo"
+          placeholder="Ej. COLL-001"
+          required
+        >
+
+      </div>
+
+
+      <div class="campo campo-completo">
+
+        <label for="nombre">
+          Nombre del producto *
+        </label>
+
+        <input
+          id="nombre"
+          type="text"
+          name="nombre"
+          [(ngModel)]="nombre"
+          placeholder="Ej. Collar Dorado Elegante"
+          required
+        >
+
+      </div>
+
+
+      <div class="campo campo-completo">
+
+        <label for="descripcion">
+          Descripción
+        </label>
+
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          [(ngModel)]="descripcion"
+          placeholder="Describe las características principales del producto"
+        ></textarea>
+
+      </div>
+
+
+      <div class="campo">
+
+        <label for="material">
+          Material
+        </label>
+
+        <input
+          id="material"
+          type="text"
+          name="material"
+          [(ngModel)]="material"
+          placeholder="Ej. Acero inoxidable"
+        >
+
+      </div>
+
+
+      <div class="campo">
+
+        <label for="color">
+          Color
+        </label>
+
+        <input
+          id="color"
+          type="text"
+          name="color"
+          [(ngModel)]="color"
+          placeholder="Ej. Dorado"
+        >
+
+      </div>
+
+
+      <div class="campo">
+
+        <label for="estilo">
+          Estilo
+        </label>
+
+        <input
+          id="estilo"
+          type="text"
+          name="estilo"
+          [(ngModel)]="estilo"
+          placeholder="Ej. Elegante"
+        >
+
+      </div>
+
+
+      <div class="campo">
+
+        <label for="precio">
+          Precio *
+        </label>
+
+        <div class="precio-input">
+
+          <span>
+            Q
+          </span>
+
+          <input
+            id="precio"
+            type="number"
+            name="precio"
+            [(ngModel)]="precio"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+            required
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="campo campo-completo">
+
+        <label>
+          Imagen del producto
+        </label>
+
+        <label
+          for="imagen"
+          class="selector-imagen"
+        >
+
+          <div class="icono-imagen">
+            ◇
+          </div>
+
+          <div>
+
+            <strong>
+              Seleccionar imagen
+            </strong>
+
+            <span>
+              JPG, JPEG, PNG o WEBP · Máximo 5 MB
+            </span>
+
+          </div>
+
+          <span class="boton-archivo">
+            Examinar
+          </span>
+
+        </label>
+
+
+        <input
+          id="imagen"
+          class="input-archivo"
+          type="file"
+          accept=".jpg,.jpeg,.png,.webp"
+          (change)="seleccionarImagen($event)"
+        >
+
+
+        @if (archivoImagen) {
+
+          <div class="archivo-seleccionado">
+
+            <span>
+              ✓
+            </span>
+
+            <div>
+
+              <strong>
+                Imagen seleccionada
+              </strong>
+
+              <p>
+                {{ archivoImagen.name }}
+              </p>
+
+            </div>
+
+          </div>
 
         }
 
-      </select>
-
-    </div>
-
-
-    <div>
-
-      <label for="codigo">
-        Código
-      </label>
-
-      <input
-        id="codigo"
-        type="text"
-        name="codigo"
-        [(ngModel)]="codigo"
-        required
-      >
-
-    </div>
-
-
-    <div>
-
-      <label for="nombre">
-        Nombre
-      </label>
-
-      <input
-        id="nombre"
-        type="text"
-        name="nombre"
-        [(ngModel)]="nombre"
-        required
-      >
-
-    </div>
-
-
-    <div>
-
-      <label for="descripcion">
-        Descripción
-      </label>
-
-      <textarea
-        id="descripcion"
-        name="descripcion"
-        [(ngModel)]="descripcion"
-      ></textarea>
-
-    </div>
-
-
-    <div>
-
-      <label for="material">
-        Material
-      </label>
-
-      <input
-        id="material"
-        type="text"
-        name="material"
-        [(ngModel)]="material"
-      >
-
-    </div>
-
-
-    <div>
-
-      <label for="color">
-        Color
-      </label>
-
-      <input
-        id="color"
-        type="text"
-        name="color"
-        [(ngModel)]="color"
-      >
-
-    </div>
-
-
-    <div>
-
-      <label for="estilo">
-        Estilo
-      </label>
-
-      <input
-        id="estilo"
-        type="text"
-        name="estilo"
-        [(ngModel)]="estilo"
-      >
-
-    </div>
-
-
-    <div>
-
-      <label for="precio">
-        Precio
-      </label>
-
-      <input
-        id="precio"
-        type="number"
-        name="precio"
-        [(ngModel)]="precio"
-        min="0"
-        step="0.01"
-        required
-      >
-
-    </div>
-
-
-    <div>
-
-      <label for="imagen">
-        URL de imagen
-      </label>
-
-      <input
-        id="imagen"
-        type="text"
-        name="imagen"
-        [(ngModel)]="imagenUrl"
-      >
+      </div>
 
     </div>
 
 
     @if (error()) {
 
-      <p>
+      <div class="mensaje-error">
         {{ error() }}
-      </p>
+      </div>
 
     }
 
 
-    <button
-      type="submit"
-      [disabled]="guardando()"
-    >
+    <div class="acciones">
 
-      @if (guardando()) {
-        Guardando...
-      } @else {
-        Guardar producto
-      }
+      <a
+        routerLink="/admin/productos"
+        class="cancelar"
+      >
+        Cancelar
+      </a>
 
-    </button>
+
+      <button
+        type="submit"
+        class="guardar"
+        [disabled]="guardando()"
+      >
+
+        @if (guardando()) {
+
+          Guardando producto...
+
+        } @else {
+
+          Guardar producto
+
+        }
+
+      </button>
+
+    </div>
 
   </form>
 

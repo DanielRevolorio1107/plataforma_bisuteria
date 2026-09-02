@@ -12,6 +12,10 @@ import {
   ProductosService
 } from '../../services/productos.service';
 
+import {
+  UploadsService
+} from '../../services/uploads.service';
+
 
 @Component({
   selector: 'app-admin-producto-nuevo',
@@ -34,7 +38,8 @@ export class AdminProductoNuevo implements OnInit {
   color = '';
   estilo = '';
   precio: number | null = null;
-  imagenUrl = '';
+
+  archivoImagen: File | null = null;
 
   guardando = signal(false);
   error = signal('');
@@ -43,25 +48,90 @@ export class AdminProductoNuevo implements OnInit {
   constructor(
     private categoriasService: CategoriasService,
     private productosService: ProductosService,
+    private uploadsService: UploadsService,
     private router: Router
   ) {}
 
 
   ngOnInit(): void {
 
-    this.categoriasService.obtenerCategorias().subscribe({
+    this.categoriasService
+      .obtenerCategorias()
+      .subscribe({
 
-      next: (categorias) => {
-        this.categorias.set(categorias);
-      },
+        next: (categorias) => {
+          this.categorias.set(categorias);
+        },
 
-      error: () => {
-        this.error.set(
-          'No se pudieron cargar las categorías'
-        );
-      }
+        error: () => {
+          this.error.set(
+            'No se pudieron cargar las categorías'
+          );
+        }
 
-    });
+      });
+  }
+
+
+  seleccionarImagen(
+    event: Event
+  ): void {
+
+    const input =
+      event.target as HTMLInputElement;
+
+    const archivo =
+      input.files?.[0];
+
+
+    if (!archivo) {
+      this.archivoImagen = null;
+      return;
+    }
+
+
+    const tiposPermitidos = [
+      'image/jpeg',
+      'image/png',
+      'image/webp'
+    ];
+
+
+    if (
+      !tiposPermitidos.includes(
+        archivo.type
+      )
+    ) {
+
+      this.error.set(
+        'La imagen debe ser JPG, PNG o WEBP'
+      );
+
+      input.value = '';
+      this.archivoImagen = null;
+
+      return;
+    }
+
+
+    if (
+      archivo.size >
+      5 * 1024 * 1024
+    ) {
+
+      this.error.set(
+        'La imagen no puede superar los 5 MB'
+      );
+
+      input.value = '';
+      this.archivoImagen = null;
+
+      return;
+    }
+
+
+    this.archivoImagen = archivo;
+    this.error.set('');
   }
 
 
@@ -73,6 +143,7 @@ export class AdminProductoNuevo implements OnInit {
       !this.nombre.trim() ||
       this.precio === null
     ) {
+
       this.error.set(
         'Completa categoría, código, nombre y precio'
       );
@@ -91,13 +162,69 @@ export class AdminProductoNuevo implements OnInit {
     }
 
 
+    this.guardando.set(true);
+    this.error.set('');
+
+
+    if (this.archivoImagen) {
+
+      this.subirImagenYCrearProducto();
+
+    } else {
+
+      this.crearProducto(null);
+
+    }
+  }
+
+
+  private subirImagenYCrearProducto(): void {
+
+    if (!this.archivoImagen) {
+      this.crearProducto(null);
+      return;
+    }
+
+
+    this.uploadsService
+      .subirImagen(this.archivoImagen)
+      .subscribe({
+
+        next: (respuesta) => {
+
+          this.crearProducto(
+            respuesta.imagen_url
+          );
+        },
+
+        error: (error) => {
+
+          this.guardando.set(false);
+
+          this.error.set(
+            error.error?.detail ||
+            'No se pudo subir la imagen'
+          );
+        }
+
+      });
+  }
+
+
+  private crearProducto(
+    imagenUrl: string | null
+  ): void {
+
     const producto: ProductoCreate = {
 
-      id_categoria: this.idCategoria,
+      id_categoria:
+        this.idCategoria!,
 
-      codigo: this.codigo.trim(),
+      codigo:
+        this.codigo.trim(),
 
-      nombre: this.nombre.trim(),
+      nombre:
+        this.nombre.trim(),
 
       descripcion:
         this.descripcion.trim() || null,
@@ -111,39 +238,36 @@ export class AdminProductoNuevo implements OnInit {
       estilo:
         this.estilo.trim() || null,
 
-      precio: this.precio,
+      precio:
+        this.precio!,
 
       imagen_url:
-        this.imagenUrl.trim() || null
+        imagenUrl
     };
 
 
-    this.guardando.set(true);
-    this.error.set('');
+    this.productosService
+      .crearProducto(producto)
+      .subscribe({
 
+        next: () => {
 
-    this.productosService.crearProducto(
-      producto
-    ).subscribe({
+          this.router.navigate([
+            '/admin/productos'
+          ]);
+        },
 
-      next: () => {
+        error: (error) => {
 
-        this.router.navigate([
-          '/admin/productos'
-        ]);
-      },
+          this.guardando.set(false);
 
-      error: (error) => {
+          this.error.set(
+            error.error?.detail ||
+            'No se pudo crear el producto'
+          );
+        }
 
-        this.guardando.set(false);
-
-        this.error.set(
-          error.error?.detail ||
-          'No se pudo crear el producto'
-        );
-      }
-
-    });
+      });
   }
 
 }

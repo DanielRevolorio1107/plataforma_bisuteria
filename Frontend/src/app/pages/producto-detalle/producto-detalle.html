@@ -1,183 +1,160 @@
-@if (cargando()) {
+<div class="pagina-detalle">
 
-  <p>
-    Cargando producto...
-  </p>
-
-}
-
-
-@if (error()) {
-
-  <p>
-    {{ error() }}
-  </p>
-
-}
+  <a
+    class="volver"
+    routerLink="/"
+  >
+    ← Volver al catálogo
+  </a>
 
 
-@if (producto(); as producto) {
+  @if (cargando()) {
 
-  <section class="producto">
-
-
-    @if (producto.imagen_url) {
-
-      <img
-        class="imagen-detalle"
-        [src]="producto.imagen_url"
-        [alt]="producto.nombre"
-      >
-
-    }
-
-
-    <h1>
-      {{ producto.nombre }}
-    </h1>
-
-
-    <p>
-      {{ producto.descripcion }}
+    <p class="estado">
+      Cargando producto...
     </p>
 
+  }
 
-    <p>
-      <strong>Código:</strong>
-      {{ producto.codigo }}
+
+  @if (error()) {
+
+    <p class="estado error">
+      {{ error() }}
     </p>
 
-
-    <p>
-      <strong>Material:</strong>
-      {{ producto.material }}
-    </p>
+  }
 
 
-    <p>
-      <strong>Color:</strong>
-      {{ producto.color }}
-    </p>
+  @if (producto(); as producto) {
+
+    <section class="producto">
 
 
-    <p>
-      <strong>Estilo:</strong>
-      {{ producto.estilo }}
-    </p>
+      <div class="contenedor-imagen">
+
+        @if (producto.imagen_url) {
+
+          <img
+            class="imagen-detalle"
+            [src]="producto.imagen_url"
+            [alt]="producto.nombre"
+          >
+
+        } @else {
+
+          <div class="sin-imagen">
+            Sin imagen
+          </div>
+
+        }
+
+      </div>
 
 
-    <h2>
-      Q{{ producto.precio }}
-    </h2>
+      <div class="informacion-producto">
+
+        <span class="estilo">
+          {{ producto.estilo || 'ZAS Jewel' }}
+        </span>
 
 
-    @if (stockDisponible() !== null) {
-
-      <p>
-        <strong>
-          Disponibles:
-        </strong>
-
-        {{ stockDisponible() }}
-      </p>
-
-    }
+        <h1>
+          {{ producto.nombre }}
+        </h1>
 
 
-    <button
-      type="button"
-      (click)="agregarAlCarrito(producto)"
-      [disabled]="
-        stockDisponible() === 0 ||
-        stockDisponible() === null
-      "
-    >
-
-      @if (stockDisponible() === null) {
-
-        Consultando stock...
-
-      } @else if (stockDisponible() === 0) {
-
-        Agotado
-
-      } @else {
-
-        Agregar al carrito
-
-      }
-
-    </button>
+        <p class="descripcion">
+          {{ producto.descripcion }}
+        </p>
 
 
-    @if (mensajeCarrito()) {
+        <div class="caracteristicas">
 
-      <p>
-        {{ mensajeCarrito() }}
-      </p>
-
-    }
-
-  </section>
+          <div>
+            <span>Código</span>
+            <strong>{{ producto.codigo }}</strong>
+          </div>
 
 
-  @if (recomendaciones().length > 0) {
-
-    <section class="recomendaciones">
-
-      <h2>
-        También te puede gustar
-      </h2>
-
-
-      <div class="lista-recomendaciones">
-
-        @for (
-          recomendacion of recomendaciones();
-          track recomendacion.producto.id_producto
-        ) {
-
-          <article>
+          <div>
+            <span>Material</span>
+            <strong>
+              {{ producto.material || 'No especificado' }}
+            </strong>
+          </div>
 
 
-            @if (recomendacion.producto.imagen_url) {
+          <div>
+            <span>Color</span>
+            <strong>
+              {{ producto.color || 'No especificado' }}
+            </strong>
+          </div>
 
-              <img
-                class="imagen-recomendacion"
-                [src]="recomendacion.producto.imagen_url"
-                [alt]="recomendacion.producto.nombre"
-              >
+        </div>
+
+
+        <div class="precio">
+          Q{{ producto.precio }}
+        </div>
+
+
+        @if (stockDisponible() !== null) {
+
+          <p
+            class="stock"
+            [class.agotado]="stockDisponible() === 0"
+          >
+
+            @if (stockDisponible() === 0) {
+
+              Producto agotado
+
+            } @else {
+
+              {{ stockDisponible() }}
+              unidades disponibles
 
             }
 
+          </p>
 
-            <h3>
-              {{ recomendacion.producto.nombre }}
-            </h3>
-
-
-            <p>
-              {{ recomendacion.producto.descripcion }}
-            </p>
+        }
 
 
-            <p>
-              <strong>
-                Q{{ recomendacion.producto.precio }}
-              </strong>
-            </p>
+        <button
+          class="boton-carrito"
+          type="button"
+          (click)="agregarAlCarrito(producto)"
+          [disabled]="
+            stockDisponible() === 0 ||
+            stockDisponible() === null
+          "
+        >
+
+          @if (stockDisponible() === null) {
+
+            Consultando disponibilidad...
+
+          } @else if (stockDisponible() === 0) {
+
+            Agotado
+
+          } @else {
+
+            Agregar al carrito
+
+          }
+
+        </button>
 
 
-            <a
-              [routerLink]="[
-                '/productos',
-                recomendacion.producto.id_producto
-              ]"
-            >
-              Ver producto
-            </a>
+        @if (mensajeCarrito()) {
 
-          </article>
+          <p class="mensaje-carrito">
+            {{ mensajeCarrito() }}
+          </p>
 
         }
 
@@ -185,6 +162,86 @@
 
     </section>
 
+
+    @if (recomendaciones().length > 0) {
+
+      <section class="recomendaciones">
+
+        <div class="titulo-recomendaciones">
+
+          <span>
+            Seleccionado para ti
+          </span>
+
+          <h2>
+            También te puede gustar
+          </h2>
+
+        </div>
+
+
+        <div class="lista-recomendaciones">
+
+          @for (
+            recomendacion of recomendaciones();
+            track recomendacion.producto.id_producto
+          ) {
+
+            <article>
+
+
+              @if (recomendacion.producto.imagen_url) {
+
+                <img
+                  class="imagen-recomendacion"
+                  [src]="recomendacion.producto.imagen_url"
+                  [alt]="recomendacion.producto.nombre"
+                >
+
+              } @else {
+
+                <div class="sin-imagen-recomendacion">
+                  Sin imagen
+                </div>
+
+              }
+
+
+              <div class="info-recomendacion">
+
+                <span>
+                  {{ recomendacion.producto.estilo || 'Bisutería' }}
+                </span>
+
+                <h3>
+                  {{ recomendacion.producto.nombre }}
+                </h3>
+
+                <strong>
+                  Q{{ recomendacion.producto.precio }}
+                </strong>
+
+                <a
+                  [routerLink]="[
+                    '/productos',
+                    recomendacion.producto.id_producto
+                  ]"
+                >
+                  Ver producto
+                </a>
+
+              </div>
+
+            </article>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
   }
 
-}
+</div>

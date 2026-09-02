@@ -1,22 +1,271 @@
 :host {
   display: block;
-  padding: 40px;
+
+  min-height:
+    calc(100vh - 82px);
+
+  background:
+    var(--crema);
 }
 
-section {
-  max-width: 600px;
+
+.pagina-confirmacion {
+  width: 90%;
+  max-width: 750px;
+
   margin: auto;
-  text-align: center;
-  padding: 40px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
+
+  padding:
+    70px 0 100px;
 }
+
+
+.tarjeta-confirmacion {
+  padding:
+    55px 45px;
+
+  background:
+    var(--marfil);
+
+  border:
+    1px solid var(--borde);
+
+  border-radius: 22px;
+
+  text-align: center;
+
+  box-shadow:
+    0 18px 50px
+    rgba(60, 15, 15, 0.08);
+}
+
+
+/* MARCA */
+
+.marca {
+  margin-bottom: 28px;
+
+  color:
+    var(--oro);
+
+  font-family:
+    Georgia,
+    'Times New Roman',
+    serif;
+
+  font-size: 14px;
+
+  text-transform: uppercase;
+
+  letter-spacing: 4px;
+}
+
+
+/* CHECK */
+
+.icono {
+  width: 75px;
+  height: 75px;
+
+  margin:
+    0 auto 25px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background:
+    var(--vino);
+
+  color:
+    var(--oro-claro);
+
+  border-radius: 50%;
+
+  font-size: 34px;
+}
+
+
+/* TÍTULO */
+
+.subtitulo {
+  color:
+    var(--oro);
+
+  font-size: 11px;
+
+  font-weight: bold;
+
+  text-transform: uppercase;
+
+  letter-spacing: 2.5px;
+}
+
 
 h1 {
-  margin-top: 0;
+  margin:
+    10px 0 18px;
+
+  color:
+    var(--vino);
+
+  font-size: 38px;
+
+  font-weight: normal;
 }
 
-a {
+
+.mensaje {
+  max-width: 530px;
+
+  margin:
+    0 auto 35px;
+
+  color:
+    var(--texto-suave);
+
+  line-height: 1.7;
+}
+
+
+/* NÚMERO DE PEDIDO */
+
+.numero-pedido {
+  max-width: 330px;
+
+  margin:
+    0 auto 30px;
+
+  padding:
+    22px;
+
+  background:
+    #f7eee2;
+
+  border:
+    1px solid var(--borde);
+
+  border-radius: 14px;
+}
+
+
+.numero-pedido span {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color:
+    var(--texto-suave);
+
+  font-size: 11px;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1.5px;
+}
+
+
+.numero-pedido strong {
+  color:
+    var(--vino);
+
+  font-family:
+    Georgia,
+    'Times New Roman',
+    serif;
+
+  font-size: 32px;
+}
+
+
+/* INFORMACIÓN */
+
+.informacion {
+  max-width: 500px;
+
+  margin:
+    0 auto 30px;
+
+  padding-top: 25px;
+
+  border-top:
+    1px solid var(--borde);
+
+  color:
+    var(--texto-suave);
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+
+.informacion p {
+  margin:
+    6px 0;
+}
+
+
+/* BOTÓN */
+
+.volver {
   display: inline-block;
-  margin-top: 20px;
+
+  padding:
+    14px 25px;
+
+  background:
+    var(--vino);
+
+  color:
+    white;
+
+  border-radius: 9px;
+
+  text-decoration: none;
+
+  font-weight: bold;
+}
+
+
+.volver:hover {
+  background:
+    var(--oro);
+
+  color:
+    var(--vino-oscuro);
+}
+
+
+/* CELULAR */
+
+@media (max-width: 600px) {
+
+  .pagina-confirmacion {
+    width: 92%;
+
+    padding:
+      40px 0 65px;
+  }
+
+
+  .tarjeta-confirmacion {
+    padding:
+      40px 22px;
+  }
+
+
+  h1 {
+    font-size: 30px;
+  }
+
+
+  .icono {
+    width: 65px;
+    height: 65px;
+
+    font-size: 28px;
+  }
+
 }

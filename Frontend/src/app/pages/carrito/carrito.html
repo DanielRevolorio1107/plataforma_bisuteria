@@ -1,117 +1,221 @@
-<h1>
-  Carrito de compras
-</h1>
+<section class="pagina-carrito">
+
+  <header class="cabecera">
+
+    <span>
+      ZAS Jewel
+    </span>
+
+    <h1>
+      Mi carrito
+    </h1>
+
+    <p>
+      Revisa tus productos antes de continuar.
+    </p>
+
+  </header>
 
 
-@if (mensaje()) {
+  @if (mensaje()) {
 
-  <p>
-    {{ mensaje() }}
-  </p>
-
-}
-
-
-@if (carritoService.items().length === 0) {
-
-  <p>
-    Tu carrito está vacío.
-  </p>
-
-  <a routerLink="/">
-    Volver al catálogo
-  </a>
-
-} @else {
-
-
-  @for (
-    item of carritoService.items();
-    track item.producto.id_producto
-  ) {
-
-    <article>
-
-      <h2>
-        {{ item.producto.nombre }}
-      </h2>
-
-
-      <p>
-        Precio:
-        Q{{ item.producto.precio }}
-      </p>
-
-
-      <p>
-        Disponibles:
-        {{ obtenerStock(item.producto.id_producto) }}
-      </p>
-
-
-      <p>
-        Cantidad:
-        {{ item.cantidad }}
-      </p>
-
-
-      <button
-        type="button"
-        (click)="disminuir(item.producto.id_producto)"
-      >
-        -
-      </button>
-
-
-      <button
-        type="button"
-        (click)="aumentar(item.producto.id_producto)"
-        [disabled]="
-          item.cantidad >=
-          obtenerStock(item.producto.id_producto)
-        "
-      >
-        +
-      </button>
-
-
-      <button
-        type="button"
-        (click)="eliminar(item.producto.id_producto)"
-      >
-        Eliminar
-      </button>
-
-
-      <p>
-        Subtotal:
-        Q{{
-          +item.producto.precio *
-          item.cantidad
-        }}
-      </p>
-
-    </article>
+    <p class="mensaje">
+      {{ mensaje() }}
+    </p>
 
   }
 
 
-  <h2>
-    Total:
-    Q{{ carritoService.total() }}
-  </h2>
+  @if (carritoService.items().length === 0) {
+
+    <div class="carrito-vacio">
+
+      <h2>
+        Tu carrito está vacío
+      </h2>
+
+      <p>
+        Descubre nuestra colección y encuentra algo especial para ti.
+      </p>
+
+      <a routerLink="/">
+        Explorar catálogo
+      </a>
+
+    </div>
+
+  } @else {
+
+    <div class="contenido-carrito">
+
+      <div class="productos">
+
+        @for (
+          item of carritoService.items();
+          track item.producto.id_producto
+        ) {
+
+          <article class="producto-carrito">
 
 
-  <button
-    type="button"
-    (click)="vaciar()"
-  >
-    Vaciar carrito
-  </button>
+            @if (item.producto.imagen_url) {
+
+              <img
+                class="imagen-carrito"
+                [src]="item.producto.imagen_url"
+                [alt]="item.producto.nombre"
+              >
+
+            } @else {
+
+              <div class="sin-imagen">
+                Sin imagen
+              </div>
+
+            }
 
 
-  <a routerLink="/checkout">
-    Finalizar compra
-  </a>
+            <div class="informacion">
 
-}
+              <span class="estilo">
+                {{ item.producto.estilo || 'ZAS Jewel' }}
+              </span>
+
+              <h2>
+                {{ item.producto.nombre }}
+              </h2>
+
+              <p class="precio-unitario">
+                Q{{ item.producto.precio }}
+              </p>
+
+              <p class="disponibilidad">
+                {{ obtenerStock(item.producto.id_producto) }}
+                disponibles
+              </p>
+
+
+              <div class="cantidad">
+
+                <button
+                  type="button"
+                  (click)="disminuir(item.producto.id_producto)"
+                >
+                  −
+                </button>
+
+                <span>
+                  {{ item.cantidad }}
+                </span>
+
+                <button
+                  type="button"
+                  (click)="aumentar(item.producto.id_producto)"
+                  [disabled]="
+                    item.cantidad >=
+                    obtenerStock(item.producto.id_producto)
+                  "
+                >
+                  +
+                </button>
+
+              </div>
+
+
+              <button
+                class="eliminar"
+                type="button"
+                (click)="eliminar(item.producto.id_producto)"
+              >
+                Eliminar
+              </button>
+
+
+              <p class="subtotal">
+                Subtotal:
+
+                <strong>
+                  Q{{
+                    +item.producto.precio *
+                    item.cantidad
+                  }}
+                </strong>
+              </p>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+
+      <aside class="resumen">
+
+        <span class="resumen-subtitulo">
+          Resumen
+        </span>
+
+        <h2>
+          Tu pedido
+        </h2>
+
+
+        <div class="linea">
+
+          <span>
+            Productos
+          </span>
+
+          <span>
+            {{ carritoService.cantidadTotal() }}
+          </span>
+
+        </div>
+
+
+        <div class="total">
+
+          <span>
+            Total
+          </span>
+
+          <strong>
+            Q{{ carritoService.total() }}
+          </strong>
+
+        </div>
+
+
+        <a
+          class="finalizar"
+          routerLink="/checkout"
+        >
+          Finalizar compra
+        </a>
+
+
+        <button
+          class="vaciar"
+          type="button"
+          (click)="vaciar()"
+        >
+          Vaciar carrito
+        </button>
+
+
+        <a
+          class="seguir-comprando"
+          routerLink="/"
+        >
+          ← Seguir comprando
+        </a>
+
+      </aside>
+
+    </div>
+
+  }
+
+</section>

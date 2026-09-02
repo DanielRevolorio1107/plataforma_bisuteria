@@ -3,9 +3,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import Inventario
+from app.models import Inventario, Administrador
 from app.schemas import InventarioResponse, InventarioUpdate
-from app.models import Administrador
 from app.security import obtener_administrador_actual
 
 
@@ -15,21 +14,36 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=list[InventarioResponse])
-def listar_inventario(db: Session = Depends(get_db)):
+@router.get(
+    "/",
+    response_model=list[InventarioResponse]
+)
+def listar_inventario(
+    db: Session = Depends(get_db),
+    administrador: Administrador = Depends(
+        obtener_administrador_actual
+    )
+):
     resultado = db.execute(
-        select(Inventario).order_by(Inventario.id_inventario)
+        select(Inventario).order_by(
+            Inventario.id_inventario
+        )
     )
 
     return resultado.scalars().all()
 
 
-@router.put("/{id_producto}", response_model=InventarioResponse)
+@router.put(
+    "/{id_producto}",
+    response_model=InventarioResponse
+)
 def actualizar_inventario(
     id_producto: int,
     datos: InventarioUpdate,
     db: Session = Depends(get_db),
-    admin: Administrador = Depends(obtener_administrador_actual)
+    administrador: Administrador = Depends(
+        obtener_administrador_actual
+    )
 ):
     inventario = db.execute(
         select(Inventario).where(
@@ -43,7 +57,10 @@ def actualizar_inventario(
             detail="No existe inventario para este producto"
         )
 
-    if datos.stock_actual < 0 or datos.stock_minimo < 0:
+    if (
+        datos.stock_actual < 0
+        or datos.stock_minimo < 0
+    ):
         raise HTTPException(
             status_code=400,
             detail="El stock no puede ser negativo"

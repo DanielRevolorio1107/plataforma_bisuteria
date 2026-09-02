@@ -25,15 +25,7 @@ export class AdminPedidos implements OnInit {
   error = signal('');
   mensaje = signal('');
 
-
-  estados = [
-    'pendiente',
-    'confirmado',
-    'preparando',
-    'enviado',
-    'entregado',
-    'cancelado'
-  ];
+  estadosOriginales: Record<number, string> = {};
 
 
   constructor(
@@ -48,10 +40,24 @@ export class AdminPedidos implements OnInit {
 
   cargarPedidos(): void {
 
+    this.cargando.set(true);
+
     this.pedidosService.obtenerPedidos().subscribe({
 
       next: (pedidos) => {
+
         this.pedidos.set(pedidos);
+
+        this.estadosOriginales = {};
+
+        pedidos.forEach(pedido => {
+
+          this.estadosOriginales[
+            pedido.id_pedido
+          ] = pedido.estado;
+
+        });
+
         this.cargando.set(false);
       },
 
@@ -68,7 +74,108 @@ export class AdminPedidos implements OnInit {
   }
 
 
-  guardarEstado(pedido: PedidoResponse): void {
+  obtenerEstadoOriginal(
+    pedido: PedidoResponse
+  ): string {
+
+    return this.estadosOriginales[
+      pedido.id_pedido
+    ] || pedido.estado;
+  }
+
+
+  estadosDisponibles(
+    pedido: PedidoResponse
+  ): string[] {
+
+    const estadoOriginal =
+      this.obtenerEstadoOriginal(pedido);
+
+
+    const transiciones: Record<
+      string,
+      string[]
+    > = {
+
+      pendiente: [
+        'pendiente',
+        'confirmado',
+        'cancelado'
+      ],
+
+      confirmado: [
+        'confirmado',
+        'preparando',
+        'cancelado'
+      ],
+
+      preparando: [
+        'preparando',
+        'enviado',
+        'cancelado'
+      ],
+
+      enviado: [
+        'enviado',
+        'entregado'
+      ],
+
+      entregado: [
+        'entregado'
+      ],
+
+      cancelado: [
+        'cancelado'
+      ]
+
+    };
+
+
+    return transiciones[
+      estadoOriginal
+    ] || [
+      estadoOriginal
+    ];
+  }
+
+
+  estadoFinal(
+    pedido: PedidoResponse
+  ): boolean {
+
+    const estadoOriginal =
+      this.obtenerEstadoOriginal(pedido);
+
+    return (
+      estadoOriginal === 'entregado' ||
+      estadoOriginal === 'cancelado'
+    );
+  }
+
+
+  puedeGuardar(
+    pedido: PedidoResponse
+  ): boolean {
+
+    if (this.estadoFinal(pedido)) {
+      return false;
+    }
+
+    return (
+      pedido.estado !==
+      this.obtenerEstadoOriginal(pedido)
+    );
+  }
+
+
+  guardarEstado(
+    pedido: PedidoResponse
+  ): void {
+
+    if (!this.puedeGuardar(pedido)) {
+      return;
+    }
+
 
     this.error.set('');
     this.mensaje.set('');
@@ -94,6 +201,8 @@ export class AdminPedidos implements OnInit {
           error.error?.detail ||
           'No se pudo actualizar el estado'
         );
+
+        this.cargarPedidos();
       }
 
     });

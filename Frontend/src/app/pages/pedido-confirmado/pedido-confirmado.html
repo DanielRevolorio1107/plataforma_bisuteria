@@ -1,22 +1,68 @@
-<section>
+<section class="pagina-confirmacion">
 
-  <h1>Pedido confirmado</h1>
+  <div class="tarjeta-confirmacion">
 
-  <p>
-    Tu pedido fue registrado correctamente.
-  </p>
+    <div class="marca">
+      ZAS Jewel
+    </div>
 
-  <p>
-    Número de pedido:
-    <strong>#{{ idPedido }}</strong>
-  </p>
 
-  <p>
-    Nos comunicaremos contigo para coordinar la entrega.
-  </p>
+    <div class="icono">
+      ✓
+    </div>
 
-  <a routerLink="/">
-    Volver al catálogo
-  </a>
+
+    <span class="subtitulo">
+      Pedido registrado
+    </span>
+
+
+    <h1>
+      ¡Gracias por tu compra!
+    </h1>
+
+
+    <p class="mensaje">
+      Tu pedido fue registrado correctamente.
+      Nos comunicaremos contigo para coordinar
+      los detalles de la entrega.
+    </p>
+
+
+    <div class="numero-pedido">
+
+      <span>
+        Número de pedido
+      </span>
+
+      <strong>
+        #{{ idPedido }}
+      </strong>
+
+    </div>
+
+
+    <div class="informacion">
+
+      <p>
+        Conserva tu número de pedido como referencia.
+      </p>
+
+      <p>
+        Nuestro equipo revisará tu solicitud
+        y se pondrá en contacto contigo.
+      </p>
+
+    </div>
+
+
+    <a
+      class="volver"
+      routerLink="/"
+    >
+      Volver al catálogo
+    </a>
+
+  </div>
 
 </section>

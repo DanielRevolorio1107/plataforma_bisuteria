@@ -1,139 +1,255 @@
-<section>
+<section class="pagina-admin">
 
-  <div class="encabezado">
+  <header class="cabecera">
 
     <div>
-      <h1>Categorías</h1>
+
+      <span class="subtitulo">
+        Organización
+      </span>
+
+      <h1>
+        Categorías
+      </h1>
 
       <p>
-        Administración de categorías de productos.
+        Organiza y administra las categorías del catálogo de ZAS Jewel.
       </p>
-    </div>
-
-    <div>
-
-      <a routerLink="/admin/categorias/nueva">
-        Nueva categoría
-      </a>
-
-      <a routerLink="/admin">
-        Volver al panel
-      </a>
 
     </div>
+
+
+    <a
+      class="nueva-categoria"
+      routerLink="/admin/categorias/nueva"
+    >
+      + Nueva categoría
+    </a>
+
+  </header>
+
+
+  <div class="barra-superior">
+
+    <a
+      routerLink="/admin"
+      class="volver"
+    >
+      ← Volver al panel
+    </a>
 
   </div>
 
 
-  @if (cargando()) {
-    <p>Cargando categorías...</p>
-  }
-
-
   @if (error()) {
-    <p>{{ error() }}</p>
+
+    <div class="mensaje error">
+      {{ error() }}
+    </div>
+
   }
 
 
   @if (mensaje()) {
-    <p>{{ mensaje() }}</p>
+
+    <div class="mensaje exito">
+      {{ mensaje() }}
+    </div>
+
   }
 
 
-  @if (!cargando() && categorias().length === 0) {
-    <p>No hay categorías registradas.</p>
+  @if (cargando()) {
+
+    <div class="estado">
+      Cargando categorías...
+    </div>
+
   }
 
 
-  @if (categorias().length > 0) {
+  @if (
+    !cargando() &&
+    categorias().length === 0
+  ) {
 
-    <table>
+    <div class="sin-categorias">
 
-      <thead>
+      <h2>
+        No hay categorías registradas
+      </h2>
 
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Estado</th>
-          <th>Acción</th>
-        </tr>
+      <p>
+        Crea una categoría para comenzar a organizar
+        los productos del catálogo.
+      </p>
 
-      </thead>
+      <a routerLink="/admin/categorias/nueva">
+        Crear categoría
+      </a>
+
+    </div>
+
+  }
 
 
-      <tbody>
+  @if (
+    !cargando() &&
+    categorias().length > 0
+  ) {
 
-        @for (
-          categoria of categorias();
-          track categoria.id_categoria
-        ) {
+    <div class="tabla-contenedor">
+
+      <table>
+
+        <thead>
 
           <tr>
 
-            <td>
-              {{ categoria.id_categoria }}
-            </td>
+            <th>
+              ID
+            </th>
 
-            <td>
-              {{ categoria.nombre }}
-            </td>
+            <th>
+              Categoría
+            </th>
 
-            <td>
-              {{ categoria.descripcion }}
-            </td>
+            <th>
+              Descripción
+            </th>
 
-            <td>
+            <th>
+              Estado
+            </th>
 
-              @if (categoria.activo) {
-                Activa
-              } @else {
-                Inactiva
-              }
-
-            </td>
-
-            <td>
-
-              <a
-                [routerLink]="[
-                  '/admin/categorias/editar',
-                  categoria.id_categoria
-                ]"
-              >
-                Editar
-              </a>
-
-
-              @if (categoria.activo) {
-
-                <button
-                  type="button"
-                  (click)="desactivar(categoria)"
-                >
-                  Desactivar
-                </button>
-
-              } @else {
-
-                <button
-                  type="button"
-                  (click)="activar(categoria)"
-                >
-                  Reactivar
-                </button>
-
-              }
-
-            </td>
+            <th>
+              Acciones
+            </th>
 
           </tr>
 
-        }
+        </thead>
 
-      </tbody>
 
-    </table>
+        <tbody>
+
+          @for (
+            categoria of categorias();
+            track categoria.id_categoria
+          ) {
+
+            <tr>
+
+
+              <td>
+
+                <span class="id-categoria">
+                  #{{ categoria.id_categoria }}
+                </span>
+
+              </td>
+
+
+              <td>
+
+                <div class="categoria-info">
+
+                  <div class="icono-categoria">
+                    ✦
+                  </div>
+
+                  <strong>
+                    {{ categoria.nombre }}
+                  </strong>
+
+                </div>
+
+              </td>
+
+
+              <td>
+
+                <p class="descripcion">
+
+                  {{
+                    categoria.descripcion ||
+                    'Sin descripción'
+                  }}
+
+                </p>
+
+              </td>
+
+
+              <td>
+
+                @if (categoria.activo) {
+
+                  <span class="estado-categoria activo">
+                    Activa
+                  </span>
+
+                } @else {
+
+                  <span class="estado-categoria inactivo">
+                    Inactiva
+                  </span>
+
+                }
+
+              </td>
+
+
+              <td>
+
+                <div class="acciones">
+
+                  <a
+                    class="editar"
+                    [routerLink]="[
+                      '/admin/categorias/editar',
+                      categoria.id_categoria
+                    ]"
+                  >
+                    Editar
+                  </a>
+
+
+                  @if (categoria.activo) {
+
+                    <button
+                      type="button"
+                      class="desactivar"
+                      (click)="desactivar(categoria)"
+                    >
+                      Desactivar
+                    </button>
+
+                  } @else {
+
+                    <button
+                      type="button"
+                      class="activar"
+                      (click)="activar(categoria)"
+                    >
+                      Reactivar
+                    </button>
+
+                  }
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
 
   }
 

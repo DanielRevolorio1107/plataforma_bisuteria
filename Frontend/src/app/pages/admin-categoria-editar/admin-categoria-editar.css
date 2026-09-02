@@ -1,47 +1,440 @@
 :host {
   display: block;
-  padding: 40px;
+
+  min-height:
+    calc(100vh - 82px);
+
+  background:
+    var(--crema);
 }
 
-section {
-  max-width: 600px;
+
+.pagina-categoria {
+  width: 90%;
+  max-width: 850px;
+
   margin: auto;
+
+  padding:
+    50px 0 90px;
 }
 
-.encabezado {
+
+/* CABECERA */
+
+.cabecera {
   display: flex;
+
   justify-content: space-between;
   align-items: center;
+
+  gap: 30px;
+
   margin-bottom: 30px;
 }
 
-form {
-  padding: 30px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
+
+.subtitulo {
+  color:
+    var(--oro);
+
+  font-size: 10px;
+
+  font-weight: bold;
+
+  text-transform: uppercase;
+
+  letter-spacing: 3px;
 }
 
-form div {
-  margin-bottom: 20px;
+
+.cabecera h1 {
+  margin:
+    6px 0 8px;
+
+  color:
+    var(--vino);
+
+  font-size: 38px;
+
+  font-weight: normal;
 }
 
-label {
+
+.cabecera p {
+  max-width: 520px;
+
+  margin: 0;
+
+  color:
+    var(--texto-suave);
+
+  line-height: 1.5;
+}
+
+
+/* VOLVER */
+
+.volver {
+  flex-shrink: 0;
+
+  padding:
+    11px 16px;
+
+  background:
+    var(--marfil);
+
+  color:
+    var(--vino);
+
+  border:
+    1px solid var(--borde);
+
+  border-radius: 8px;
+
+  text-decoration: none;
+
+  font-size: 13px;
+}
+
+
+.volver:hover {
+  color:
+    var(--oro);
+
+  border-color:
+    var(--oro);
+}
+
+
+/* CARGANDO */
+
+.estado {
+  padding:
+    45px;
+
+  background:
+    var(--marfil);
+
+  color:
+    var(--texto-suave);
+
+  border:
+    1px solid var(--borde);
+
+  border-radius: 18px;
+
+  text-align: center;
+
+  box-shadow:
+    0 10px 35px
+    rgba(60, 15, 15, 0.05);
+}
+
+
+/* FORMULARIO */
+
+.formulario {
+  padding:
+    38px;
+
+  background:
+    var(--marfil);
+
+  border:
+    1px solid var(--borde);
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 12px 40px
+    rgba(60, 15, 15, 0.07);
+}
+
+
+/* TÍTULO DEL FORMULARIO */
+
+.titulo-formulario {
+  margin-bottom: 32px;
+
+  padding-bottom: 25px;
+
+  border-bottom:
+    1px solid var(--borde);
+}
+
+
+.titulo-formulario > span {
+  color:
+    var(--oro);
+
+  font-size: 10px;
+
+  font-weight: bold;
+
+  text-transform: uppercase;
+
+  letter-spacing: 2px;
+}
+
+
+.titulo-formulario h2 {
+  margin:
+    6px 0 7px;
+
+  color:
+    var(--vino);
+
+  font-size: 27px;
+
+  font-weight: normal;
+}
+
+
+.titulo-formulario p {
+  margin: 0;
+
+  color:
+    var(--texto-suave);
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+
+/* CAMPOS */
+
+.campo {
+  margin-bottom: 25px;
+}
+
+
+.campo label {
   display: block;
-  margin-bottom: 6px;
+
+  margin-bottom: 8px;
+
+  color:
+    var(--vino);
+
+  font-size: 13px;
+
+  font-weight: 600;
 }
 
-input,
-textarea {
+
+.campo input,
+.campo textarea {
   width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
+
+  padding:
+    14px 15px;
+
+  background:
+    #fffdfa;
+
+  color:
+    var(--texto);
+
+  border:
+    1px solid var(--borde);
+
+  border-radius: 9px;
+
+  outline: none;
+
+  font-size: 14px;
 }
 
-textarea {
-  min-height: 100px;
+
+.campo input:focus,
+.campo textarea:focus {
+  border-color:
+    var(--oro);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(201, 164, 76, 0.12);
 }
 
-button {
-  padding: 12px 20px;
+
+.campo textarea {
+  min-height: 130px;
+
+  resize: vertical;
+}
+
+
+.campo small {
+  display: block;
+
+  margin-top: 7px;
+
+  color:
+    #9b8a83;
+
+  font-size: 11px;
+}
+
+
+/* ERROR */
+
+.mensaje-error {
+  margin-top: 10px;
+
+  padding:
+    13px 15px;
+
+  background:
+    #f7e5e5;
+
+  color:
+    #8e3030;
+
+  border:
+    1px solid #e9c6c6;
+
+  border-radius: 9px;
+
+  font-size: 13px;
+}
+
+
+/* ACCIONES */
+
+.acciones {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  margin-top: 32px;
+
+  padding-top: 25px;
+
+  border-top:
+    1px solid var(--borde);
+}
+
+
+.cancelar,
+.guardar {
+  padding:
+    13px 22px;
+
+  border-radius: 9px;
+
+  font-size: 13px;
+
+  font-weight: bold;
+}
+
+
+/* CANCELAR */
+
+.cancelar {
+  background:
+    transparent;
+
+  color:
+    var(--vino);
+
+  border:
+    1px solid var(--borde);
+
+  text-decoration: none;
+}
+
+
+.cancelar:hover {
+  color:
+    var(--oro);
+
+  border-color:
+    var(--oro);
+}
+
+
+/* GUARDAR */
+
+.guardar {
+  background:
+    var(--vino);
+
+  color:
+    white;
+
+  border: none;
+
   cursor: pointer;
+}
+
+
+.guardar:hover:not(:disabled) {
+  background:
+    var(--oro);
+
+  color:
+    var(--vino-oscuro);
+}
+
+
+.guardar:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+
+/* CELULAR */
+
+@media (max-width: 600px) {
+
+  .pagina-categoria {
+    width: 92%;
+
+    padding:
+      35px 0 60px;
+  }
+
+
+  .cabecera {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+
+  .cabecera h1 {
+    font-size: 31px;
+  }
+
+
+  .volver {
+    width: 100%;
+
+    text-align: center;
+  }
+
+
+  .formulario {
+    padding:
+      25px 20px;
+  }
+
+
+  .acciones {
+    flex-direction: column-reverse;
+  }
+
+
+  .cancelar,
+  .guardar {
+    width: 100%;
+
+    text-align: center;
+  }
+
 }

@@ -1,5 +1,12 @@
-import { Component, OnInit, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import {
+  Component,
+  OnInit,
+  signal
+} from '@angular/core';
+
+import {
+  RouterLink
+} from '@angular/router';
 
 import {
   Producto,
@@ -9,8 +16,13 @@ import {
 
 @Component({
   selector: 'app-admin-productos',
-  imports: [RouterLink],
+
+  imports: [
+    RouterLink
+  ],
+
   templateUrl: './admin-productos.html',
+
   styleUrl: './admin-productos.css'
 })
 export class AdminProductos implements OnInit {
@@ -18,8 +30,8 @@ export class AdminProductos implements OnInit {
   productos = signal<Producto[]>([]);
 
   cargando = signal(true);
+
   error = signal('');
-  mensaje = signal('');
 
 
   constructor(
@@ -28,92 +40,120 @@ export class AdminProductos implements OnInit {
 
 
   ngOnInit(): void {
+
     this.cargarProductos();
+
   }
 
 
   cargarProductos(): void {
 
+    this.cargando.set(true);
+
+    this.error.set('');
+
+
     this.productosService
       .obtenerTodosAdmin()
       .subscribe({
 
-        next: (productos) => {
-          this.productos.set(productos);
+        next: (datos) => {
+
+          this.productos.set(datos);
+
           this.cargando.set(false);
+
         },
 
+
         error: () => {
+
           this.error.set(
             'No se pudieron cargar los productos'
           );
 
           this.cargando.set(false);
+
         }
 
       });
+
   }
 
 
-  desactivar(producto: Producto): void {
+  desactivarProducto(
+    idProducto: number
+  ): void {
 
-    this.error.set('');
-    this.mensaje.set('');
+    const confirmar = window.confirm(
+      '¿Deseas desactivar este producto?'
+    );
+
+
+    if (!confirmar) {
+      return;
+    }
 
 
     this.productosService
-      .desactivarProducto(producto.id_producto)
+      .desactivarProducto(idProducto)
       .subscribe({
 
         next: () => {
 
-          this.mensaje.set(
-            'Producto desactivado correctamente'
-          );
-
           this.cargarProductos();
+
         },
 
-        error: (error) => {
+
+        error: () => {
 
           this.error.set(
-            error.error?.detail ||
             'No se pudo desactivar el producto'
           );
+
         }
 
       });
+
   }
 
 
-  activar(producto: Producto): void {
+  activarProducto(
+    idProducto: number
+  ): void {
 
-    this.error.set('');
-    this.mensaje.set('');
+    const confirmar = window.confirm(
+      '¿Deseas activar nuevamente este producto?'
+    );
+
+
+    if (!confirmar) {
+      return;
+    }
 
 
     this.productosService
-      .activarProducto(producto.id_producto)
+      .activarProducto(idProducto)
       .subscribe({
 
         next: () => {
 
-          this.mensaje.set(
-            'Producto activado correctamente'
-          );
-
           this.cargarProductos();
+
         },
 
-        error: (error) => {
+
+        error: () => {
 
           this.error.set(
-            error.error?.detail ||
             'No se pudo activar el producto'
           );
+
         }
 
       });
+
   }
 
 }

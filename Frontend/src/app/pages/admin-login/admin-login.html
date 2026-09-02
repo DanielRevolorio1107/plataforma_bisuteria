@@ -1,72 +1,115 @@
-<section>
+<section class="pagina-login">
 
-  <h1>Administración</h1>
+  <div class="tarjeta-login">
 
-  <p>
-    Inicia sesión para administrar la tienda.
-  </p>
+    <div class="marca">
 
-
-  <form
-    (ngSubmit)="iniciarSesion()"
-  >
-
-    <div>
-
-      <label for="usuario">
-        Usuario
-      </label>
-
-      <input
-        id="usuario"
-        type="text"
-        name="usuario"
-        [(ngModel)]="usuario"
-        required
+      <img
+        src="/logo-zas-jewel.jpeg"
+        alt="ZAS Jewel"
+        class="logo"
       >
+
+      <span>
+        ZAS JEWEL
+      </span>
 
     </div>
 
 
-    <div>
+    <div class="encabezado">
 
-      <label for="password">
-        Contraseña
-      </label>
+      <span>
+        Administración
+      </span>
 
-      <input
-        id="password"
-        type="password"
-        name="password"
-        [(ngModel)]="password"
-        required
-      >
-
-    </div>
-
-
-    @if (error()) {
+      <h1>
+        Panel Administrativo
+      </h1>
 
       <p>
-        {{ error() }}
+        Ingresa tus credenciales para continuar.
       </p>
 
-    }
+    </div>
 
 
-    <button
-      type="submit"
-      [disabled]="cargando()"
+    <form
+      (ngSubmit)="iniciarSesion()"
+      class="formulario"
     >
 
-      @if (cargando()) {
-        Ingresando...
-      } @else {
-        Iniciar sesión
+      <div class="campo">
+
+        <label for="usuario">
+          Usuario
+        </label>
+
+        <input
+          id="usuario"
+          type="text"
+          name="usuario"
+          [(ngModel)]="usuario"
+          placeholder="Ingresa tu usuario"
+          autocomplete="username"
+          required
+        >
+
+      </div>
+
+
+      <div class="campo">
+
+        <label for="password">
+          Contraseña
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          placeholder="Ingresa tu contraseña"
+          autocomplete="current-password"
+          required
+        >
+
+      </div>
+
+
+      @if (error()) {
+
+        <p class="error">
+          {{ error() }}
+        </p>
+
       }
 
-    </button>
 
-  </form>
+      <button
+        type="submit"
+        class="boton-ingresar"
+        [disabled]="cargando()"
+      >
+
+        @if (cargando()) {
+          Ingresando...
+        } @else {
+          Iniciar sesión
+        }
+
+      </button>
+
+    </form>
+
+
+    <a
+      routerLink="/"
+      class="volver"
+    >
+      ← Volver a la tienda
+    </a>
+
+  </div>
 
 </section>

@@ -1,42 +1,68 @@
-<section>
+<section class="pagina-categoria">
 
-  <div class="encabezado">
+  <header class="cabecera">
 
-    <h1>Editar categoría</h1>
+    <div>
 
-    <a routerLink="/admin/categorias">
-      Volver
+      <span class="subtitulo">
+        Organización
+      </span>
+
+      <h1>
+        Editar categoría
+      </h1>
+
+      <p>
+        Actualiza la información de esta categoría de ZAS Jewel.
+      </p>
+
+    </div>
+
+
+    <a
+      routerLink="/admin/categorias"
+      class="volver"
+    >
+      ← Volver a categorías
     </a>
 
-  </div>
+  </header>
 
 
   @if (cargando()) {
 
-    <p>
+    <div class="estado">
       Cargando categoría...
-    </p>
+    </div>
 
   } @else {
 
-
-    @if (error()) {
-
-      <p>
-        {{ error() }}
-      </p>
-
-    }
-
-
     <form
+      class="formulario"
       (ngSubmit)="guardarCategoria()"
     >
 
-      <div>
+      <div class="titulo-formulario">
+
+        <span>
+          Información de la categoría
+        </span>
+
+        <h2>
+          Editar datos
+        </h2>
+
+        <p>
+          Modifica el nombre o la descripción de esta categoría.
+        </p>
+
+      </div>
+
+
+      <div class="campo">
 
         <label for="nombre">
-          Nombre
+          Nombre de la categoría *
         </label>
 
         <input
@@ -44,13 +70,18 @@
           type="text"
           name="nombre"
           [(ngModel)]="nombre"
+          placeholder="Ej. Collares"
           required
         >
+
+        <small>
+          Este nombre se utiliza para organizar los productos del catálogo.
+        </small>
 
       </div>
 
 
-      <div>
+      <div class="campo">
 
         <label for="descripcion">
           Descripción
@@ -60,23 +91,54 @@
           id="descripcion"
           name="descripcion"
           [(ngModel)]="descripcion"
+          placeholder="Describe brevemente esta categoría"
         ></textarea>
+
+        <small>
+          La descripción es opcional.
+        </small>
 
       </div>
 
 
-      <button
-        type="submit"
-        [disabled]="guardando()"
-      >
+      @if (error()) {
 
-        @if (guardando()) {
-          Guardando...
-        } @else {
-          Guardar cambios
-        }
+        <div class="mensaje-error">
+          {{ error() }}
+        </div>
 
-      </button>
+      }
+
+
+      <div class="acciones">
+
+        <a
+          routerLink="/admin/categorias"
+          class="cancelar"
+        >
+          Cancelar
+        </a>
+
+
+        <button
+          type="submit"
+          class="guardar"
+          [disabled]="guardando()"
+        >
+
+          @if (guardando()) {
+
+            Guardando cambios...
+
+          } @else {
+
+            Guardar cambios
+
+          }
+
+        </button>
+
+      </div>
 
     </form>
 

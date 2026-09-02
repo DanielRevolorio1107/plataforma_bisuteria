@@ -3,10 +3,22 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import Categoria, Producto, Inventario, Administrador
-from app.schemas import ProductoCreate, ProductoResponse, ProductoUpdate
+
+from app.models import (
+    Categoria,
+    Producto,
+    Inventario,
+    Administrador
+)
+
+from app.schemas import (
+    ProductoCreate,
+    ProductoResponse,
+    ProductoUpdate
+)
+
 from app.security import obtener_administrador_actual
-from app.models import Producto, Inventario
+
 
 router = APIRouter(
     prefix="/productos",
@@ -23,8 +35,18 @@ def listar_productos(
 ):
     resultado = db.execute(
         select(Producto)
-        .where(Producto.activo == True)
-        .order_by(Producto.id_producto)
+        .join(
+            Categoria,
+            Producto.id_categoria
+            == Categoria.id_categoria
+        )
+        .where(
+            Producto.activo.is_(True),
+            Categoria.activo.is_(True)
+        )
+        .order_by(
+            Producto.id_producto
+        )
     )
 
     return resultado.scalars().all()
@@ -36,13 +58,42 @@ def listar_productos(
 )
 def listar_productos_admin(
     db: Session = Depends(get_db),
-    admin: Administrador = Depends(obtener_administrador_actual)
+    administrador: Administrador = Depends(
+        obtener_administrador_actual
+    )
 ):
     resultado = db.execute(
-        select(Producto).order_by(Producto.id_producto)
+        select(Producto).order_by(
+            Producto.id_producto
+        )
     )
 
     return resultado.scalars().all()
+
+
+@router.get(
+    "/admin/{id_producto}",
+    response_model=ProductoResponse
+)
+def obtener_producto_admin(
+    id_producto: int,
+    db: Session = Depends(get_db),
+    administrador: Administrador = Depends(
+        obtener_administrador_actual
+    )
+):
+    producto = db.get(
+        Producto,
+        id_producto
+    )
+
+    if not producto:
+        raise HTTPException(
+            status_code=404,
+            detail="El producto no existe"
+        )
+
+    return producto
 
 
 @router.post(
@@ -53,14 +104,31 @@ def listar_productos_admin(
 def crear_producto(
     producto: ProductoCreate,
     db: Session = Depends(get_db),
-    admin: Administrador = Depends(obtener_administrador_actual)
+    administrador: Administrador = Depends(
+        obtener_administrador_actual
+    )
 ):
-    categoria = db.get(Categoria, producto.id_categoria)
+    categoria = db.get(
+        Categoria,
+        producto.id_categoria
+    )
 
     if not categoria:
         raise HTTPException(
             status_code=404,
             detail="La categoría indicada no existe"
+        )
+
+    if not categoria.activo:
+        raise HTTPException(
+            status_code=400,
+            detail="La categoría indicada está inactiva"
+        )
+
+    if producto.precio < 0:
+        raise HTTPException(
+            status_code=400,
+            detail="El precio no puede ser negativo"
         )
 
     codigo_existente = db.execute(
@@ -89,6 +157,7 @@ def crear_producto(
     )
 
     db.add(nuevo_inventario)
+
     db.commit()
     db.refresh(nuevo_producto)
 
@@ -102,14 +171,39 @@ def crear_producto(
 def activar_producto(
     id_producto: int,
     db: Session = Depends(get_db),
-    admin: Administrador = Depends(obtener_administrador_actual)
+    administrador: Administrador = Depends(
+        obtener_administrador_actual
+    )
 ):
-    producto = db.get(Producto, id_producto)
+    producto = db.get(
+        Producto,
+        id_producto
+    )
 
     if not producto:
         raise HTTPException(
             status_code=404,
             detail="El producto no existe"
+        )
+
+    categoria = db.get(
+        Categoria,
+        producto.id_categoria
+    )
+
+    if not categoria:
+        raise HTTPException(
+            status_code=404,
+            detail="La categoría del producto no existe"
+        )
+
+    if not categoria.activo:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "No se puede activar el producto "
+                "porque su categoría está inactiva"
+            )
         )
 
     producto.activo = True
@@ -121,6 +215,55 @@ def activar_producto(
 
 
 @router.get(
+    "/{id_producto}/disponibilidad"
+)
+def obtener_disponibilidad(
+    id_producto: int,
+    db: Session = Depends(get_db)
+):
+    producto = db.get(
+        Producto,
+        id_producto
+    )
+
+    if not producto or not producto.activo:
+        raise HTTPException(
+            status_code=404,
+            detail="Producto no encontrado"
+        )
+
+    categoria = db.get(
+        Categoria,
+        producto.id_categoria
+    )
+
+    if not categoria or not categoria.activo:
+        raise HTTPException(
+            status_code=404,
+            detail="Producto no encontrado"
+        )
+
+    inventario = db.execute(
+        select(Inventario).where(
+            Inventario.id_producto
+            == id_producto
+        )
+    ).scalar_one_or_none()
+
+    if not inventario:
+        return {
+            "id_producto": id_producto,
+            "stock_disponible": 0
+        }
+
+    return {
+        "id_producto": id_producto,
+        "stock_disponible":
+            inventario.stock_actual
+    }
+
+
+@router.get(
     "/{id_producto}",
     response_model=ProductoResponse
 )
@@ -128,12 +271,26 @@ def obtener_producto(
     id_producto: int,
     db: Session = Depends(get_db)
 ):
-    producto = db.get(Producto, id_producto)
+    producto = db.get(
+        Producto,
+        id_producto
+    )
 
-    if not producto:
+    if not producto or not producto.activo:
         raise HTTPException(
             status_code=404,
-            detail="El producto no existe"
+            detail="Producto no encontrado"
+        )
+
+    categoria = db.get(
+        Categoria,
+        producto.id_categoria
+    )
+
+    if not categoria or not categoria.activo:
+        raise HTTPException(
+            status_code=404,
+            detail="Producto no encontrado"
         )
 
     return producto
@@ -147,9 +304,14 @@ def actualizar_producto(
     id_producto: int,
     datos: ProductoUpdate,
     db: Session = Depends(get_db),
-    admin: Administrador = Depends(obtener_administrador_actual)
+    administrador: Administrador = Depends(
+        obtener_administrador_actual
+    )
 ):
-    producto = db.get(Producto, id_producto)
+    producto = db.get(
+        Producto,
+        id_producto
+    )
 
     if not producto:
         raise HTTPException(
@@ -157,7 +319,9 @@ def actualizar_producto(
             detail="El producto no existe"
         )
 
-    cambios = datos.model_dump(exclude_unset=True)
+    cambios = datos.model_dump(
+        exclude_unset=True
+    )
 
     if "id_categoria" in cambios:
         categoria = db.get(
@@ -171,6 +335,35 @@ def actualizar_producto(
                 detail="La categoría indicada no existe"
             )
 
+        if not categoria.activo:
+            raise HTTPException(
+                status_code=400,
+                detail="La categoría indicada está inactiva"
+            )
+
+    if (
+        "codigo" in cambios
+        and cambios["codigo"] is not None
+        and cambios["codigo"] != producto.codigo
+    ):
+        codigo_existente = db.execute(
+            select(Producto).where(
+                Producto.codigo
+                == cambios["codigo"],
+                Producto.id_producto
+                != id_producto
+            )
+        ).scalar_one_or_none()
+
+        if codigo_existente:
+            raise HTTPException(
+                status_code=409,
+                detail=(
+                    "Ya existe un producto "
+                    "con ese código"
+                )
+            )
+
     if (
         "precio" in cambios
         and cambios["precio"] is not None
@@ -182,7 +375,11 @@ def actualizar_producto(
         )
 
     for campo, valor in cambios.items():
-        setattr(producto, campo, valor)
+        setattr(
+            producto,
+            campo,
+            valor
+        )
 
     db.commit()
     db.refresh(producto)
@@ -197,9 +394,14 @@ def actualizar_producto(
 def desactivar_producto(
     id_producto: int,
     db: Session = Depends(get_db),
-    admin: Administrador = Depends(obtener_administrador_actual)
+    administrador: Administrador = Depends(
+        obtener_administrador_actual
+    )
 ):
-    producto = db.get(Producto, id_producto)
+    producto = db.get(
+        Producto,
+        id_producto
+    )
 
     if not producto:
         raise HTTPException(
@@ -213,35 +415,3 @@ def desactivar_producto(
     db.refresh(producto)
 
     return producto
-
-@router.get("/{id_producto}/disponibilidad")
-def obtener_disponibilidad(
-    id_producto: int,
-    db: Session = Depends(get_db)
-):
-
-    producto = db.get(
-        Producto,
-        id_producto
-    )
-
-    if not producto or not producto.activo:
-        raise HTTPException(
-            status_code=404,
-            detail="Producto no encontrado"
-        )
-
-    inventario = db.query(Inventario).filter(
-        Inventario.id_producto == id_producto
-    ).first()
-
-    if not inventario:
-        return {
-            "id_producto": id_producto,
-            "stock_disponible": 0
-        }
-
-    return {
-        "id_producto": id_producto,
-        "stock_disponible": inventario.stock_actual
-    }

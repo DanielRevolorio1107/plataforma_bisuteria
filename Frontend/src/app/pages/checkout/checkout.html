@@ -1,92 +1,241 @@
-<h1>Finalizar compra</h1>
+<section class="pagina-checkout">
 
-@if (carritoService.items().length === 0) {
+  <header class="cabecera">
 
-  <p>Tu carrito está vacío.</p>
+    <span>
+      ZAS Jewel
+    </span>
 
-  <a routerLink="/">
-    Volver al catálogo
-  </a>
+    <h1>
+      Finalizar compra
+    </h1>
 
-} @else {
+    <p>
+      Completa tus datos para registrar el pedido.
+    </p>
 
-  <form
-    (ngSubmit)="realizarPedido()"
+  </header>
+
+
+  @if (carritoService.items().length === 0) {
+
+    <div class="checkout-vacio">
+
+      <h2>
+        Tu carrito está vacío
+      </h2>
+
+      <p>
+        Agrega productos antes de realizar un pedido.
+      </p>
+
+      <a routerLink="/">
+        Volver al catálogo
+      </a>
+
+    </div>
+
+  } @else {
+
+    <div class="contenido-checkout">
+
+
+      <form
+        class="formulario"
+        (ngSubmit)="realizarPedido()"
+      >
+
+        <div class="titulo-seccion">
+
+          <span>
+            Información del cliente
+          </span>
+
+          <h2>
+            Datos de entrega
+          </h2>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label for="nombre">
+            Nombre completo
+          </label>
+
+          <input
+            id="nombre"
+            type="text"
+            name="nombre"
+            [(ngModel)]="nombre"
+            placeholder="Ingresa tu nombre"
+            required
+          >
+
+        </div>
+
+
+        <div class="campo">
+
+  <label for="telefono">
+    Teléfono
+  </label>
+
+  <input
+    id="telefono"
+    type="tel"
+    name="telefono"
+    [(ngModel)]="telefono"
+    (input)="validarTelefono($event)"
+    inputmode="numeric"
+    maxlength="8"
+    placeholder="Ej. 55555555"
+    autocomplete="tel"
+    required
   >
 
-    <div>
-      <label for="nombre">
-        Nombre
-      </label>
+  <small class="ayuda-campo">
+    Ingresa únicamente números.
+  </small>
 
-      <input
-        id="nombre"
-        type="text"
-        name="nombre"
-        [(ngModel)]="nombre"
-        required
-      >
+</div>
+
+
+        <div class="campo">
+
+          <label for="direccion">
+            Dirección de entrega
+          </label>
+
+          <textarea
+            id="direccion"
+            name="direccion"
+            [(ngModel)]="direccion"
+            placeholder="Escribe la dirección donde deseas recibir tu pedido"
+            required
+          ></textarea>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label for="observaciones">
+            Observaciones
+          </label>
+
+          <textarea
+            id="observaciones"
+            name="observaciones"
+            [(ngModel)]="observaciones"
+            placeholder="Indicaciones adicionales para tu pedido"
+          ></textarea>
+
+        </div>
+
+
+        @if (error()) {
+
+          <p class="error">
+            {{ error() }}
+          </p>
+
+        }
+
+
+        <button
+          class="confirmar"
+          type="submit"
+          [disabled]="enviando()"
+        >
+
+          @if (enviando()) {
+            Procesando pedido...
+          } @else {
+            Confirmar pedido
+          }
+
+        </button>
+
+
+        <a
+          class="volver"
+          routerLink="/carrito"
+        >
+          ← Volver al carrito
+        </a>
+
+      </form>
+
+
+      <aside class="resumen">
+
+        <span class="resumen-subtitulo">
+          Resumen
+        </span>
+
+        <h2>
+          Tu pedido
+        </h2>
+
+
+        <div class="productos-resumen">
+
+          @for (
+            item of carritoService.items();
+            track item.producto.id_producto
+          ) {
+
+            <div class="producto-resumen">
+
+              <div>
+
+                <strong>
+                  {{ item.producto.nombre }}
+                </strong>
+
+                <small>
+                  Cantidad: {{ item.cantidad }}
+                </small>
+
+              </div>
+
+              <span>
+                Q{{
+                  +item.producto.precio *
+                  item.cantidad
+                }}
+              </span>
+
+            </div>
+
+          }
+
+        </div>
+
+
+        <div class="total">
+
+          <span>
+            Total
+          </span>
+
+          <strong>
+            Q{{ carritoService.total() }}
+          </strong>
+
+        </div>
+
+
+        <p class="nota">
+          Tu pedido quedará registrado y posteriormente se coordinará la entrega.
+        </p>
+
+      </aside>
+
     </div>
 
-    <div>
-      <label for="telefono">
-        Teléfono
-      </label>
+  }
 
-      <input
-        id="telefono"
-        type="text"
-        name="telefono"
-        [(ngModel)]="telefono"
-        required
-      >
-    </div>
-
-    <div>
-      <label for="direccion">
-        Dirección de entrega
-      </label>
-
-      <textarea
-        id="direccion"
-        name="direccion"
-        [(ngModel)]="direccion"
-        required
-      ></textarea>
-    </div>
-
-    <div>
-      <label for="observaciones">
-        Observaciones
-      </label>
-
-      <textarea
-        id="observaciones"
-        name="observaciones"
-        [(ngModel)]="observaciones"
-      ></textarea>
-    </div>
-
-    <h2>
-      Total:
-      Q{{ carritoService.total() }}
-    </h2>
-
-    @if (error()) {
-      <p>{{ error() }}</p>
-    }
-
-    <button
-      type="submit"
-      [disabled]="enviando()"
-    >
-      @if (enviando()) {
-        Procesando...
-      } @else {
-        Confirmar pedido
-      }
-    </button>
-
-  </form>
-
-}
+</section>

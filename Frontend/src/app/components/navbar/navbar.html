@@ -1,20 +1,52 @@
-<nav>
+<nav class="navbar">
 
   <a
     class="marca"
     routerLink="/"
   >
-    Bisutería
+
+    <img
+  src="/logo-zas-jewel.jpeg"
+  alt="ZAS Jewel"
+  class="logo"
+>
+
+    <div class="nombre-marca">
+
+      <span>
+        ZAS
+      </span>
+
+      <small>
+        JEWEL
+      </small>
+
+    </div>
+
   </a>
+
 
   <div class="menu">
 
-    <a routerLink="/">
+    <a
+      routerLink="/"
+      class="enlace"
+    >
       Catálogo
     </a>
 
-    <a routerLink="/carrito">
-      Carrito ({{ carritoService.cantidadTotal() }})
+
+    <a
+      routerLink="/carrito"
+      class="carrito"
+    >
+
+      Carrito
+
+      <span class="contador">
+        {{ carritoService.cantidadTotal() }}
+      </span>
+
     </a>
 
   </div>

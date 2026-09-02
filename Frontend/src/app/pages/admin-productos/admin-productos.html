@@ -1,144 +1,259 @@
-<section>
+<section class="pagina-admin">
 
-  <div class="encabezado">
+  <header class="cabecera">
 
     <div>
-      <h1>Productos</h1>
+
+      <span class="subtitulo">
+        Catálogo
+      </span>
+
+      <h1>
+        Productos
+      </h1>
 
       <p>
-        Administración de productos de la tienda.
+        Administra los productos disponibles en ZAS Jewel.
       </p>
-    </div>
-
-    <div>
-
-      <a routerLink="/admin/productos/nuevo">
-        Nuevo producto
-      </a>
-
-      <a routerLink="/admin">
-        Volver al panel
-      </a>
 
     </div>
+
+
+    <a
+      class="nuevo-producto"
+      routerLink="/admin/productos/nuevo"
+    >
+      + Nuevo producto
+    </a>
+
+  </header>
+
+
+  <div class="barra-superior">
+
+    <a
+      routerLink="/admin"
+      class="volver"
+    >
+      ← Volver al panel
+    </a>
 
   </div>
 
 
   @if (cargando()) {
-    <p>Cargando productos...</p>
+
+    <div class="estado">
+      Cargando productos...
+    </div>
+
   }
 
 
   @if (error()) {
-    <p>{{ error() }}</p>
-  }
 
+    <div class="estado error">
+      {{ error() }}
+    </div>
 
-  @if (mensaje()) {
-    <p>{{ mensaje() }}</p>
   }
 
 
   @if (!cargando() && productos().length === 0) {
-    <p>No hay productos registrados.</p>
+
+    <div class="sin-productos">
+
+      <h2>
+        No hay productos registrados
+      </h2>
+
+      <p>
+        Agrega el primer producto de la tienda.
+      </p>
+
+      <a routerLink="/admin/productos/nuevo">
+        Crear producto
+      </a>
+
+    </div>
+
   }
 
 
-  @if (productos().length > 0) {
+  @if (!cargando() && productos().length > 0) {
 
-    <table>
+    <div class="tabla-contenedor">
 
-      <thead>
+      <table>
 
-        <tr>
-          <th>ID</th>
-          <th>Código</th>
-          <th>Producto</th>
-          <th>Precio</th>
-          <th>Estado</th>
-          <th>Acción</th>
-        </tr>
-
-      </thead>
-
-
-      <tbody>
-
-        @for (
-          producto of productos();
-          track producto.id_producto
-        ) {
+        <thead>
 
           <tr>
 
-            <td>
-              {{ producto.id_producto }}
-            </td>
+            <th>
+              Imagen
+            </th>
 
-            <td>
-              {{ producto.codigo }}
-            </td>
+            <th>
+              Código
+            </th>
 
-            <td>
-              {{ producto.nombre }}
-            </td>
+            <th>
+              Producto
+            </th>
 
-            <td>
-              Q{{ producto.precio }}
-            </td>
+            <th>
+              Precio
+            </th>
 
-            <td>
+            <th>
+              Estado
+            </th>
 
-              @if (producto.activo) {
-                Activo
-              } @else {
-                Inactivo
-              }
-
-            </td>
-
-            <td>
-
-              <a
-                [routerLink]="[
-                  '/admin/productos/editar',
-                  producto.id_producto
-                ]"
-              >
-                Editar
-              </a>
-
-
-              @if (producto.activo) {
-
-                <button
-                  type="button"
-                  (click)="desactivar(producto)"
-                >
-                  Desactivar
-                </button>
-
-              } @else {
-
-                <button
-                  type="button"
-                  (click)="activar(producto)"
-                >
-                  Reactivar
-                </button>
-
-              }
-
-            </td>
+            <th>
+              Acciones
+            </th>
 
           </tr>
 
-        }
+        </thead>
 
-      </tbody>
 
-    </table>
+        <tbody>
+
+          @for (
+            producto of productos();
+            track producto.id_producto
+          ) {
+
+            <tr>
+
+
+              <td>
+
+                @if (producto.imagen_url) {
+
+                  <img
+                    class="miniatura"
+                    [src]="producto.imagen_url"
+                    [alt]="producto.nombre"
+                  >
+
+                } @else {
+
+                  <div class="miniatura sin-imagen">
+                    Sin imagen
+                  </div>
+
+                }
+
+              </td>
+
+
+              <td>
+
+                <span class="codigo">
+                  {{ producto.codigo }}
+                </span>
+
+              </td>
+
+
+              <td>
+
+                <div class="producto-info">
+
+                  <strong>
+                    {{ producto.nombre }}
+                  </strong>
+
+                  <span>
+                    {{ producto.material || 'Sin material' }}
+                  </span>
+
+                </div>
+
+              </td>
+
+
+              <td>
+
+                <strong class="precio">
+                  Q{{ producto.precio }}
+                </strong>
+
+              </td>
+
+
+              <td>
+
+                @if (producto.activo) {
+
+                  <span class="estado-producto activo">
+                    Activo
+                  </span>
+
+                } @else {
+
+                  <span class="estado-producto inactivo">
+                    Inactivo
+                  </span>
+
+                }
+
+              </td>
+
+
+              <td>
+
+                <div class="acciones">
+
+                  <a
+                    class="editar"
+                    [routerLink]="[
+                      '/admin/productos/editar',
+                      producto.id_producto
+                    ]"
+                  >
+                    Editar
+                  </a>
+
+
+                  @if (producto.activo) {
+
+                    <button
+                      type="button"
+                      class="desactivar"
+                      (click)="desactivarProducto(producto.id_producto)"
+                    >
+                      Desactivar
+                    </button>
+
+                  } @else {
+
+                    <button
+                      type="button"
+                      class="activar"
+                      (click)="activarProducto(producto.id_producto)"
+                    >
+                      Activar
+                    </button>
+
+                  }
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
 
   }
 

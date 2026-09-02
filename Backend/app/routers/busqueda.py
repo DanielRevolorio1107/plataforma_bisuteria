@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import Producto
+from app.models import Categoria, Producto
 from app.schemas import BusquedaResultado
 from app.busqueda import buscar_productos_semanticos
 
@@ -33,18 +33,23 @@ def buscar_productos(
 ):
 
     productos = db.scalars(
-        select(Producto).where(
-            Producto.activo == True
+        select(Producto)
+        .join(
+            Categoria,
+            Producto.id_categoria
+            == Categoria.id_categoria
+        )
+        .where(
+            Producto.activo.is_(True),
+            Categoria.activo.is_(True)
         )
     ).all()
-
 
     resultados = buscar_productos_semanticos(
         consulta=q,
         productos=list(productos),
         limite=limite
     )
-
 
     return [
         {

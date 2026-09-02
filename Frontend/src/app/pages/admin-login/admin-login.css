@@ -1,35 +1,310 @@
 :host {
   display: block;
-  padding: 40px;
+
+  min-height:
+    calc(100vh - 82px);
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--crema),
+      #efe2d2
+    );
 }
 
-section {
-  max-width: 450px;
+
+.pagina-login {
+  width: 90%;
+  max-width: 520px;
+
   margin: auto;
-  padding: 30px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
+
+  padding:
+    65px 0 90px;
 }
 
-h1 {
-  margin-top: 0;
+
+/* TARJETA */
+
+.tarjeta-login {
+  padding:
+    40px;
+
+  background:
+    var(--marfil);
+
+  border:
+    1px solid var(--borde);
+
+  border-radius: 22px;
+
+  box-shadow:
+    0 20px 55px
+    rgba(65, 15, 15, 0.11);
 }
 
-div {
+
+/* MARCA */
+
+.marca {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 30px;
+}
+
+
+.logo {
+  width: 90px;
+  height: 90px;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  border:
+    2px solid var(--oro);
+
+  box-shadow:
+    0 6px 18px
+    rgba(0, 0, 0, 0.12);
+}
+
+
+.marca span {
+  color:
+    var(--vino);
+
+  font-family:
+    Georgia,
+    'Times New Roman',
+    serif;
+
+  font-size: 18px;
+
+  letter-spacing: 4px;
+}
+
+
+/* ENCABEZADO */
+
+.encabezado {
+  text-align: center;
+
+  margin-bottom: 32px;
+}
+
+
+.encabezado > span {
+  color:
+    var(--oro);
+
+  font-size: 10px;
+
+  font-weight: bold;
+
+  text-transform: uppercase;
+
+  letter-spacing: 3px;
+}
+
+
+.encabezado h1 {
+  margin:
+    8px 0 10px;
+
+  color:
+    var(--vino);
+
+  font-size: 32px;
+
+  font-weight: normal;
+}
+
+
+.encabezado p {
+  margin: 0;
+
+  color:
+    var(--texto-suave);
+
+  font-size: 14px;
+}
+
+
+/* CAMPOS */
+
+.campo {
   margin-bottom: 20px;
 }
 
-label {
+
+.campo label {
   display: block;
-  margin-bottom: 6px;
+
+  margin-bottom: 8px;
+
+  color:
+    var(--vino);
+
+  font-size: 13px;
+
+  font-weight: 600;
 }
 
-input {
+
+.campo input {
   width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
+
+  padding:
+    14px 15px;
+
+  border:
+    1px solid var(--borde);
+
+  border-radius: 9px;
+
+  background:
+    #fffdfa;
+
+  color:
+    var(--texto);
+
+  outline: none;
 }
 
-button {
-  padding: 12px 20px;
+
+.campo input:focus {
+  border-color:
+    var(--oro);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(201, 164, 76, 0.13);
+}
+
+
+/* ERROR */
+
+.error {
+  padding:
+    12px 14px;
+
+  margin-bottom: 18px;
+
+  background:
+    #f8e6e6;
+
+  color:
+    #8b2626;
+
+  border-radius: 8px;
+
+  text-align: center;
+
+  font-size: 13px;
+}
+
+
+/* BOTÓN */
+
+.boton-ingresar {
+  width: 100%;
+
+  padding:
+    15px;
+
+  border: none;
+
+  border-radius: 9px;
+
+  background:
+    var(--vino);
+
+  color:
+    white;
+
+  cursor: pointer;
+
+  font-weight: bold;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1px;
+}
+
+
+.boton-ingresar:hover:not(:disabled) {
+  background:
+    var(--oro);
+
+  color:
+    var(--vino-oscuro);
+}
+
+
+.boton-ingresar:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+
+/* VOLVER */
+
+.volver {
+  display: block;
+
+  margin-top: 24px;
+
+  color:
+    var(--texto-suave);
+
+  text-align: center;
+
+  text-decoration: none;
+
+  font-size: 13px;
+}
+
+
+.volver:hover {
+  color:
+    var(--oro);
+}
+
+
+/* CELULAR */
+
+@media (max-width: 600px) {
+
+  .pagina-login {
+    width: 92%;
+
+    padding:
+      40px 0 60px;
+  }
+
+
+  .tarjeta-login {
+    padding:
+      30px 22px;
+  }
+
+
+  .encabezado h1 {
+    font-size: 27px;
+  }
+
+
+  .logo {
+    width: 78px;
+    height: 78px;
+  }
+
 }

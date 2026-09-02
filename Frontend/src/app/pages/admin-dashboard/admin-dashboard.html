@@ -1,53 +1,201 @@
-<section>
+<section class="pagina-admin">
 
-  <h1>Panel Administrativo</h1>
+  <header class="cabecera-admin">
 
-  <p>
-    Bienvenido al sistema de administración de la bisutería.
-  </p>
+    <div>
+
+      <span class="subtitulo">
+        Administración
+      </span>
+
+      <h1>
+        Panel de ZAS Jewel
+      </h1>
+
+      <p>
+        Gestiona los productos, inventario y pedidos de la tienda.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="cerrar-sesion"
+      (click)="cerrarSesion()"
+    >
+      Cerrar sesión
+    </button>
+
+  </header>
+
+
+  <section class="bienvenida">
+
+    <div class="bienvenida-texto">
+
+      <span>
+        ZAS JEWEL
+      </span>
+
+      <h2>
+        Gestión de la tienda
+      </h2>
+
+      <p>
+        Desde este panel puedes administrar la información
+        principal de la plataforma.
+      </p>
+
+    </div>
+
+
+    <img
+      src="/logo-zas-jewel.jpeg"
+      alt="ZAS Jewel"
+      class="logo-admin"
+    >
+
+  </section>
 
 
   <div class="opciones">
 
+
     <a
-      class="boton"
       routerLink="/admin/productos"
+      class="tarjeta"
     >
-      Productos
+
+      <div class="icono">
+        ◇
+      </div>
+
+      <div>
+
+        <span>
+          Catálogo
+        </span>
+
+        <h2>
+          Productos
+        </h2>
+
+        <p>
+          Agrega, modifica, activa o desactiva
+          los productos disponibles en la tienda.
+        </p>
+
+        <strong>
+          Gestionar productos →
+        </strong>
+
+      </div>
+
     </a>
 
 
+
     <a
-      class="boton"
       routerLink="/admin/categorias"
+      class="tarjeta"
     >
-      Categorías
+
+      <div class="icono">
+        ✦
+      </div>
+
+      <div>
+
+        <span>
+          Organización
+        </span>
+
+        <h2>
+          Categorías
+        </h2>
+
+        <p>
+          Organiza los productos utilizando las
+          diferentes categorías de bisutería.
+        </p>
+
+        <strong>
+          Gestionar categorías →
+        </strong>
+
+      </div>
+
     </a>
 
 
+
     <a
-  class="boton"
-  routerLink="/admin/inventario"
->
-  Inventario
-</a>
+      routerLink="/admin/inventario"
+      class="tarjeta"
+    >
+
+      <div class="icono">
+        ▣
+      </div>
+
+      <div>
+
+        <span>
+          Existencias
+        </span>
+
+        <h2>
+          Inventario
+        </h2>
+
+        <p>
+          Consulta y actualiza las cantidades
+          disponibles de cada producto.
+        </p>
+
+        <strong>
+          Gestionar inventario →
+        </strong>
+
+      </div>
+
+    </a>
 
 
-<a
-  class="boton"
-  routerLink="/admin/pedidos"
->
-  Pedidos
-</a>
+
+    <a
+      routerLink="/admin/pedidos"
+      class="tarjeta"
+    >
+
+      <div class="icono">
+        ♢
+      </div>
+
+      <div>
+
+        <span>
+          Ventas
+        </span>
+
+        <h2>
+          Pedidos
+        </h2>
+
+        <p>
+          Consulta los pedidos realizados por
+          los clientes y actualiza su estado.
+        </p>
+
+        <strong>
+          Gestionar pedidos →
+        </strong>
+
+      </div>
+
+    </a>
 
   </div>
-
-
-  <button
-    type="button"
-    (click)="cerrarSesion()"
-  >
-    Cerrar sesión
-  </button>
 
 </section>

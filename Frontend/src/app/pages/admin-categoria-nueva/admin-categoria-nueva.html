@@ -1,24 +1,60 @@
-<section>
+<section class="pagina-categoria">
 
-  <div class="encabezado">
-
-    <h1>Nueva categoría</h1>
-
-    <a routerLink="/admin/categorias">
-      Volver
-    </a>
-
-  </div>
-
-
-  <form
-    (ngSubmit)="guardarCategoria()"
-  >
+  <header class="cabecera">
 
     <div>
 
+      <span class="subtitulo">
+        Organización
+      </span>
+
+      <h1>
+        Nueva categoría
+      </h1>
+
+      <p>
+        Crea una nueva categoría para organizar los productos de ZAS Jewel.
+      </p>
+
+    </div>
+
+
+    <a
+      routerLink="/admin/categorias"
+      class="volver"
+    >
+      ← Volver a categorías
+    </a>
+
+  </header>
+
+
+  <form
+    class="formulario"
+    (ngSubmit)="guardarCategoria()"
+  >
+
+    <div class="titulo-formulario">
+
+      <span>
+        Información de la categoría
+      </span>
+
+      <h2>
+        Datos generales
+      </h2>
+
+      <p>
+        Define el nombre y una breve descripción para identificar esta categoría.
+      </p>
+
+    </div>
+
+
+    <div class="campo">
+
       <label for="nombre">
-        Nombre
+        Nombre de la categoría *
       </label>
 
       <input
@@ -26,13 +62,18 @@
         type="text"
         name="nombre"
         [(ngModel)]="nombre"
+        placeholder="Ej. Collares"
         required
       >
+
+      <small>
+        Este nombre se utilizará para organizar los productos del catálogo.
+      </small>
 
     </div>
 
 
-    <div>
+    <div class="campo">
 
       <label for="descripcion">
         Descripción
@@ -42,32 +83,54 @@
         id="descripcion"
         name="descripcion"
         [(ngModel)]="descripcion"
+        placeholder="Ej. Collares elegantes para diferentes ocasiones"
       ></textarea>
+
+      <small>
+        La descripción es opcional.
+      </small>
 
     </div>
 
 
     @if (error()) {
 
-      <p>
+      <div class="mensaje-error">
         {{ error() }}
-      </p>
+      </div>
 
     }
 
 
-    <button
-      type="submit"
-      [disabled]="guardando()"
-    >
+    <div class="acciones">
 
-      @if (guardando()) {
-        Guardando...
-      } @else {
-        Guardar categoría
-      }
+      <a
+        routerLink="/admin/categorias"
+        class="cancelar"
+      >
+        Cancelar
+      </a>
 
-    </button>
+
+      <button
+        type="submit"
+        class="guardar"
+        [disabled]="guardando()"
+      >
+
+        @if (guardando()) {
+
+          Guardando categoría...
+
+        } @else {
+
+          Guardar categoría
+
+        }
+
+      </button>
+
+    </div>
 
   </form>
 

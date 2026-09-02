@@ -1,107 +1,259 @@
-<section>
+<section class="pagina-admin">
 
-  <div class="encabezado">
+  <header class="cabecera">
 
     <div>
-      <h1>Inventario</h1>
+
+      <span class="subtitulo">
+        Existencias
+      </span>
+
+      <h1>
+        Inventario
+      </h1>
 
       <p>
-        Control de existencias de los productos.
+        Controla las existencias disponibles de los productos de ZAS Jewel.
       </p>
+
     </div>
 
-    <a routerLink="/admin">
-      Volver al panel
+    <a
+      routerLink="/admin"
+      class="volver"
+    >
+      ← Volver al panel
     </a>
 
-  </div>
-
-
-  @if (cargando()) {
-    <p>Cargando inventario...</p>
-  }
+  </header>
 
 
   @if (error()) {
-    <p>{{ error() }}</p>
+
+    <div class="mensaje error">
+      {{ error() }}
+    </div>
+
   }
 
 
   @if (mensaje()) {
-    <p>{{ mensaje() }}</p>
+
+    <div class="mensaje exito">
+      {{ mensaje() }}
+    </div>
+
   }
 
 
-  @if (inventario().length > 0) {
+  @if (cargando()) {
 
-    <table>
+    <div class="estado">
+      Cargando inventario...
+    </div>
 
-      <thead>
-
-        <tr>
-          <th>Producto</th>
-          <th>Stock actual</th>
-          <th>Stock mínimo</th>
-          <th>Acción</th>
-        </tr>
-
-      </thead>
+  }
 
 
-      <tbody>
+  @if (
+    !cargando() &&
+    inventario().length === 0
+  ) {
 
-        @for (
-          item of inventario();
-          track item.id_inventario
-        ) {
+    <div class="sin-inventario">
+
+      <h2>
+        No hay registros de inventario
+      </h2>
+
+      <p>
+        Los productos registrados aparecerán aquí
+        para controlar sus existencias.
+      </p>
+
+    </div>
+
+  }
+
+
+  @if (
+    !cargando() &&
+    inventario().length > 0
+  ) {
+
+    <div class="tabla-contenedor">
+
+      <table>
+
+        <thead>
 
           <tr>
 
-            <td>
-              {{ obtenerNombreProducto(item.id_producto) }}
-            </td>
+            <th>
+              Producto
+            </th>
 
+            <th>
+              Stock actual
+            </th>
 
-            <td>
+            <th>
+              Stock mínimo
+            </th>
 
-              <input
-                type="number"
-                [(ngModel)]="item.stock_actual"
-                min="0"
-              >
+            <th>
+              Estado
+            </th>
 
-            </td>
-
-
-            <td>
-
-              <input
-                type="number"
-                [(ngModel)]="item.stock_minimo"
-                min="0"
-              >
-
-            </td>
-
-
-            <td>
-
-              <button
-                type="button"
-                (click)="guardar(item)"
-              >
-                Guardar
-              </button>
-
-            </td>
+            <th>
+              Acción
+            </th>
 
           </tr>
 
-        }
+        </thead>
 
-      </tbody>
 
-    </table>
+        <tbody>
+
+          @for (
+            item of inventario();
+            track item.id_inventario
+          ) {
+
+            <tr>
+
+              <td>
+
+                <div class="producto">
+
+                  <div class="icono-producto">
+                    ◇
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      {{ obtenerNombreProducto(item.id_producto) }}
+                    </strong>
+
+                    <span>
+                      Producto #{{ item.id_producto }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+
+              <td>
+
+                <div class="control-stock">
+
+                  <input
+                    type="number"
+                    [(ngModel)]="item.stock_actual"
+                    min="0"
+                  >
+
+                  <span>
+                    unidades
+                  </span>
+
+                </div>
+
+              </td>
+
+
+              <td>
+
+                <div class="control-stock">
+
+                  <input
+                    type="number"
+                    [(ngModel)]="item.stock_minimo"
+                    min="0"
+                  >
+
+                  <span>
+                    unidades
+                  </span>
+
+                </div>
+
+              </td>
+
+
+              <td>
+
+                @if (
+                  item.stock_actual <= item.stock_minimo
+                ) {
+
+                  <span class="estado-stock bajo">
+                    Stock bajo
+                  </span>
+
+                } @else {
+
+                  <span class="estado-stock disponible">
+                    Disponible
+                  </span>
+
+                }
+
+              </td>
+
+
+              <td>
+
+                <button
+                  type="button"
+                  class="guardar"
+                  (click)="guardar(item)"
+                >
+                  Guardar cambios
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    <div class="leyenda">
+
+      <div>
+
+        <span class="punto disponible"></span>
+
+        <p>
+          Stock disponible
+        </p>
+
+      </div>
+
+
+      <div>
+
+        <span class="punto bajo"></span>
+
+        <p>
+          Stock igual o menor al mínimo
+        </p>
+
+      </div>
+
+    </div>
 
   }
 

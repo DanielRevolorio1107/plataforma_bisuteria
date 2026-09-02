@@ -1,200 +1,384 @@
-<section>
+<section class="pagina-producto">
 
-  <div class="encabezado">
+  <header class="cabecera">
 
-    <h1>Editar producto</h1>
+    <div>
 
-    <a routerLink="/admin/productos">
-      Volver
+      <span class="subtitulo">
+        Catálogo
+      </span>
+
+      <h1>
+        Editar producto
+      </h1>
+
+      <p>
+        Actualiza la información de esta pieza de ZAS Jewel.
+      </p>
+
+    </div>
+
+
+    <a
+      routerLink="/admin/productos"
+      class="volver"
+    >
+      ← Volver a productos
     </a>
 
-  </div>
+  </header>
 
 
   @if (cargando()) {
 
-    <p>Cargando producto...</p>
+    <div class="estado">
+      Cargando producto...
+    </div>
 
   } @else {
 
-    @if (error()) {
-      <p>{{ error() }}</p>
-    }
-
-
     <form
+      class="formulario"
       (ngSubmit)="guardarProducto()"
     >
 
-      <div>
+      <div class="titulo-formulario">
 
-        <label for="categoria">
-          Categoría
-        </label>
+        <span>
+          Información del producto
+        </span>
 
-        <select
-          id="categoria"
-          name="categoria"
-          [(ngModel)]="idCategoria"
-          required
-        >
+        <h2>
+          Editar datos
+        </h2>
 
-          @for (
-            categoria of categorias();
-            track categoria.id_categoria
-          ) {
+        <p>
+          Modifica únicamente la información que necesites actualizar.
+        </p>
 
-            <option
-              [ngValue]="categoria.id_categoria"
+      </div>
+
+
+      <div class="grid-formulario">
+
+
+        <div class="campo">
+
+          <label for="categoria">
+            Categoría *
+          </label>
+
+          <select
+            id="categoria"
+            name="categoria"
+            [(ngModel)]="idCategoria"
+            required
+          >
+
+            @for (
+              categoria of categorias();
+              track categoria.id_categoria
+            ) {
+
+              <option
+                [ngValue]="categoria.id_categoria"
+              >
+                {{ categoria.nombre }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label for="codigo">
+            Código *
+          </label>
+
+          <input
+            id="codigo"
+            type="text"
+            name="codigo"
+            [(ngModel)]="codigo"
+            required
+          >
+
+        </div>
+
+
+        <div class="campo campo-completo">
+
+          <label for="nombre">
+            Nombre del producto *
+          </label>
+
+          <input
+            id="nombre"
+            type="text"
+            name="nombre"
+            [(ngModel)]="nombre"
+            required
+          >
+
+        </div>
+
+
+        <div class="campo campo-completo">
+
+          <label for="descripcion">
+            Descripción
+          </label>
+
+          <textarea
+            id="descripcion"
+            name="descripcion"
+            [(ngModel)]="descripcion"
+          ></textarea>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label for="material">
+            Material
+          </label>
+
+          <input
+            id="material"
+            type="text"
+            name="material"
+            [(ngModel)]="material"
+          >
+
+        </div>
+
+
+        <div class="campo">
+
+          <label for="color">
+            Color
+          </label>
+
+          <input
+            id="color"
+            type="text"
+            name="color"
+            [(ngModel)]="color"
+          >
+
+        </div>
+
+
+        <div class="campo">
+
+          <label for="estilo">
+            Estilo
+          </label>
+
+          <input
+            id="estilo"
+            type="text"
+            name="estilo"
+            [(ngModel)]="estilo"
+          >
+
+        </div>
+
+
+        <div class="campo">
+
+          <label for="precio">
+            Precio *
+          </label>
+
+          <div class="precio-input">
+
+            <span>
+              Q
+            </span>
+
+            <input
+              id="precio"
+              type="number"
+              name="precio"
+              [(ngModel)]="precio"
+              min="0"
+              step="0.01"
+              required
             >
-              {{ categoria.nombre }}
-            </option>
+
+          </div>
+
+        </div>
+
+
+        <div class="campo campo-completo">
+
+          <label>
+            Imagen actual
+          </label>
+
+
+          @if (imagenUrl) {
+
+            <div class="imagen-actual-contenedor">
+
+              <img
+                class="imagen-actual"
+                [src]="imagenUrl"
+                [alt]="nombre"
+              >
+
+              <div>
+
+                <span>
+                  Imagen guardada actualmente
+                </span>
+
+                <p>
+                  Si no seleccionas una nueva imagen,
+                  esta se conservará.
+                </p>
+
+              </div>
+
+            </div>
+
+          } @else {
+
+            <div class="sin-imagen-actual">
+
+              <span>
+                Sin imagen
+              </span>
+
+              <p>
+                Este producto todavía no tiene una imagen registrada.
+              </p>
+
+            </div>
 
           }
 
-        </select>
+        </div>
+
+
+        <div class="campo campo-completo">
+
+          <label>
+            Cambiar imagen
+          </label>
+
+
+          <label
+            for="imagen"
+            class="selector-imagen"
+          >
+
+            <div class="icono-imagen">
+              ◇
+            </div>
+
+            <div>
+
+              <strong>
+                Seleccionar nueva imagen
+              </strong>
+
+              <span>
+                JPG, JPEG, PNG o WEBP · Máximo 5 MB
+              </span>
+
+            </div>
+
+            <span class="boton-archivo">
+              Examinar
+            </span>
+
+          </label>
+
+
+          <input
+            id="imagen"
+            class="input-archivo"
+            type="file"
+            accept=".jpg,.jpeg,.png,.webp"
+            (change)="seleccionarImagen($event)"
+          >
+
+
+          @if (archivoImagen) {
+
+            <div class="archivo-seleccionado">
+
+              <span class="check">
+                ✓
+              </span>
+
+              <div>
+
+                <strong>
+                  Nueva imagen seleccionada
+                </strong>
+
+                <p>
+                  {{ archivoImagen.name }}
+                </p>
+
+              </div>
+
+            </div>
+
+          }
+
+        </div>
 
       </div>
 
 
-      <div>
+      @if (error()) {
 
-        <label for="codigo">
-          Código
-        </label>
+        <div class="mensaje-error">
+          {{ error() }}
+        </div>
 
-        <input
-          id="codigo"
-          name="codigo"
-          [(ngModel)]="codigo"
-          required
+      }
+
+
+      <div class="acciones">
+
+        <a
+          routerLink="/admin/productos"
+          class="cancelar"
+        >
+          Cancelar
+        </a>
+
+
+        <button
+          type="submit"
+          class="guardar"
+          [disabled]="guardando()"
         >
 
-      </div>
+          @if (guardando()) {
 
+            Guardando cambios...
 
-      <div>
+          } @else {
 
-        <label for="nombre">
-          Nombre
-        </label>
+            Guardar cambios
 
-        <input
-          id="nombre"
-          name="nombre"
-          [(ngModel)]="nombre"
-          required
-        >
+          }
+
+        </button>
 
       </div>
-
-
-      <div>
-
-        <label for="descripcion">
-          Descripción
-        </label>
-
-        <textarea
-          id="descripcion"
-          name="descripcion"
-          [(ngModel)]="descripcion"
-        ></textarea>
-
-      </div>
-
-
-      <div>
-
-        <label for="material">
-          Material
-        </label>
-
-        <input
-          id="material"
-          name="material"
-          [(ngModel)]="material"
-        >
-
-      </div>
-
-
-      <div>
-
-        <label for="color">
-          Color
-        </label>
-
-        <input
-          id="color"
-          name="color"
-          [(ngModel)]="color"
-        >
-
-      </div>
-
-
-      <div>
-
-        <label for="estilo">
-          Estilo
-        </label>
-
-        <input
-          id="estilo"
-          name="estilo"
-          [(ngModel)]="estilo"
-        >
-
-      </div>
-
-
-      <div>
-
-        <label for="precio">
-          Precio
-        </label>
-
-        <input
-          id="precio"
-          type="number"
-          name="precio"
-          [(ngModel)]="precio"
-          min="0"
-          step="0.01"
-          required
-        >
-
-      </div>
-
-
-      <div>
-
-        <label for="imagen">
-          URL de imagen
-        </label>
-
-        <input
-          id="imagen"
-          name="imagen"
-          [(ngModel)]="imagenUrl"
-        >
-
-      </div>
-
-
-      <button
-        type="submit"
-        [disabled]="guardando()"
-      >
-
-        @if (guardando()) {
-          Guardando...
-        } @else {
-          Guardar cambios
-        }
-
-      </button>
 
     </form>
 

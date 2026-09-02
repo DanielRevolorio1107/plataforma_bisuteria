@@ -1,121 +1,321 @@
-<h1>Catálogo de Bisutería</h1>
+<section class="hero">
+
+  <div class="hero-contenido">
+
+    <div class="hero-texto">
+
+      <span class="hero-etiqueta">
+        Elegancia en cada detalle
+      </span>
+
+      <h1>
+        Encuentra la pieza que
+        <em>hable por ti.</em>
+      </h1>
+
+      <p>
+        Descubre accesorios cuidadosamente seleccionados
+        para complementar tu estilo y hacer especial cada ocasión.
+      </p>
+
+      <div class="hero-botones">
+
+        <a
+          href="#coleccion"
+          class="hero-principal"
+        >
+          Explorar colección
+        </a>
+
+        <a
+          routerLink="/carrito"
+          class="hero-secundario"
+        >
+          Ver carrito
+        </a>
+
+      </div>
+
+    </div>
 
 
-<section class="busqueda">
+    <div class="hero-marca">
 
-  <input
-    type="text"
-    [(ngModel)]="consulta"
-    placeholder="¿Qué estás buscando?"
-    (keyup.enter)="buscar()"
-  >
+      <div class="circulo-logo">
 
-  <button
-    type="button"
-    (click)="buscar()"
-    [disabled]="buscando()"
-  >
+        <img
+          src="/logo-zas-jewel.jpeg"
+          alt="ZAS Jewel"
+        >
 
-    @if (buscando()) {
-      Buscando...
-    } @else {
-      Buscar
+      </div>
+
+      <span>
+        ZAS JEWEL
+      </span>
+
+      <small>
+        Detalles que hacen la diferencia
+      </small>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="catalogo" id="coleccion">
+
+  <header class="cabecera">
+
+    <p class="subtitulo">
+      Encuentra el accesorio ideal para ti
+    </p>
+
+    <h1>
+      Catálogo de Bisutería
+    </h1>
+
+  </header>
+
+
+  <section class="busqueda">
+
+    <input
+      type="text"
+      [(ngModel)]="consulta"
+      placeholder="Describe lo que estás buscando..."
+      (keyup.enter)="buscar()"
+    >
+
+    <button
+      type="button"
+      (click)="buscar()"
+      [disabled]="buscando()"
+    >
+
+      @if (buscando()) {
+        Buscando...
+      } @else {
+        Buscar
+      }
+
+    </button>
+
+
+    @if (busquedaActiva()) {
+
+      <button
+        class="boton-secundario"
+        type="button"
+        (click)="limpiarBusqueda()"
+      >
+        Ver todos
+      </button>
+
     }
 
-  </button>
+  </section>
 
 
   @if (busquedaActiva()) {
 
-    <button
-      type="button"
-      (click)="limpiarBusqueda()"
-    >
-      Ver todos
-    </button>
+    <p class="resultado-busqueda">
+
+      Resultados para:
+
+      <strong>
+        "{{ consulta }}"
+      </strong>
+
+    </p>
 
   }
 
+
+  @if (cargando()) {
+
+    <p class="estado">
+      Cargando productos...
+    </p>
+
+  }
+
+
+  @if (error()) {
+
+    <p class="estado error">
+      {{ error() }}
+    </p>
+
+  }
+
+
+  @if (
+    !cargando() &&
+    !buscando() &&
+    productos().length === 0
+  ) {
+
+    <p class="estado">
+      No se encontraron productos relacionados.
+    </p>
+
+  }
+
+
+  <div class="productos-grid">
+
+    @for (
+      producto of productos();
+      track producto.id_producto
+    ) {
+
+      <article class="producto-card">
+
+
+        @if (producto.imagen_url) {
+
+          <img
+            class="imagen-producto"
+            [src]="producto.imagen_url"
+            [alt]="producto.nombre"
+          >
+
+        } @else {
+
+          <div class="sin-imagen">
+            Sin imagen
+          </div>
+
+        }
+
+
+        <div class="producto-info">
+
+          <span class="estilo">
+            {{ producto.estilo || 'Bisutería' }}
+          </span>
+
+
+          <h2>
+            {{ producto.nombre }}
+          </h2>
+
+
+          <p class="descripcion">
+            {{ producto.descripcion }}
+          </p>
+
+
+          <div class="datos">
+
+            @if (producto.material) {
+
+              <span>
+                {{ producto.material }}
+              </span>
+
+            }
+
+
+            @if (producto.color) {
+
+              <span>
+                {{ producto.color }}
+              </span>
+
+            }
+
+          </div>
+
+
+          <div class="parte-inferior">
+
+            <strong class="precio">
+              Q{{ producto.precio }}
+            </strong>
+
+
+            <a
+              class="boton-ver"
+              [routerLink]="[
+                '/productos',
+                producto.id_producto
+              ]"
+            >
+              Ver producto
+            </a>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    }
+
+  </div>
+
 </section>
 
+<section class="beneficios">
 
-@if (busquedaActiva()) {
+  <div class="beneficios-contenido">
 
-  <p>
-    Resultados para:
-    <strong>{{ consulta }}</strong>
-  </p>
+    <article class="beneficio">
 
-}
+      <div class="beneficio-icono">
+        ✦
+      </div>
 
+      <h3>
+        Selección especial
+      </h3>
 
-@if (cargando()) {
-  <p>Cargando productos...</p>
-}
+      <p>
+        Piezas seleccionadas para complementar
+        tu estilo y destacar cada ocasión.
+      </p>
 
-
-@if (error()) {
-  <p>{{ error() }}</p>
-}
-
-
-@if (
-  !cargando() &&
-  !buscando() &&
-  productos().length === 0
-) {
-
-  <p>
-    No se encontraron productos relacionados.
-  </p>
-
-}
+    </article>
 
 
-@for (
-  producto of productos();
-  track producto.id_producto
-) {
+    <article class="beneficio">
 
-  <article>
+      <div class="beneficio-icono">
+        ◇
+      </div>
 
-    <h2>
-      {{ producto.nombre }}
-    </h2>
+      <h3>
+        Compra sencilla
+      </h3>
 
-    <p>
-      {{ producto.descripcion }}
-    </p>
+      <p>
+        Explora el catálogo, encuentra tus favoritos
+        y realiza tu pedido de forma rápida.
+      </p>
 
-    <p>
-      <strong>Material:</strong>
-      {{ producto.material }}
-    </p>
+    </article>
 
-    <p>
-      <strong>Color:</strong>
-      {{ producto.color }}
-    </p>
 
-    <p>
-      <strong>Estilo:</strong>
-      {{ producto.estilo }}
-    </p>
+    <article class="beneficio">
 
-    <p>
-      <strong>Precio:</strong>
-      Q{{ producto.precio }}
-    </p>
+      <div class="beneficio-icono">
+        ♡
+      </div>
 
-    <a
-      [routerLink]="[
-        '/productos',
-        producto.id_producto
-      ]"
-    >
-      Ver producto
-    </a>
+      <h3>
+        Atención personalizada
+      </h3>
 
-  </article>
+      <p>
+        Coordinamos contigo los detalles necesarios
+        para completar la entrega de tu pedido.
+      </p>
 
-}
+    </article>
+
+  </div>
+
+</section>  

@@ -1,3 +1,4 @@
+from io import BytesIO
 from pathlib import Path
 from uuid import uuid4
 
@@ -7,6 +8,11 @@ from fastapi import (
     File,
     HTTPException,
     UploadFile
+)
+
+from PIL import (
+    Image,
+    UnidentifiedImageError
 )
 
 from app.models import Administrador
@@ -29,10 +35,10 @@ CARPETA_PRODUCTOS.mkdir(
 )
 
 
-TIPOS_PERMITIDOS = {
-    "image/jpeg": ".jpg",
-    "image/png": ".png",
-    "image/webp": ".webp"
+FORMATOS_PERMITIDOS = {
+    "JPEG": ".jpg",
+    "PNG": ".png",
+    "WEBP": ".webp"
 }
 
 
@@ -44,18 +50,19 @@ async def subir_imagen_producto(
     )
 ):
 
-    if archivo.content_type not in TIPOS_PERMITIDOS:
+    contenido = await archivo.read()
+
+    await archivo.close()
+
+
+    if not contenido:
 
         raise HTTPException(
             status_code=400,
-            detail="Solo se permiten imágenes JPG, PNG o WEBP"
+            detail="La imagen está vacía"
         )
 
 
-    contenido = await archivo.read()
-
-
-    # Máximo 5 MB
     if len(contenido) > 5 * 1024 * 1024:
 
         raise HTTPException(
@@ -64,8 +71,38 @@ async def subir_imagen_producto(
         )
 
 
-    extension = TIPOS_PERMITIDOS[
-        archivo.content_type
+    try:
+
+        imagen = Image.open(
+            BytesIO(contenido)
+        )
+
+        formato = imagen.format
+
+        imagen.verify()
+
+    except (
+        UnidentifiedImageError,
+        OSError,
+        SyntaxError
+    ):
+
+        raise HTTPException(
+            status_code=400,
+            detail="El archivo no es una imagen válida"
+        )
+
+
+    if formato not in FORMATOS_PERMITIDOS:
+
+        raise HTTPException(
+            status_code=400,
+            detail="Solo se permiten imágenes JPG, PNG o WEBP"
+        )
+
+
+    extension = FORMATOS_PERMITIDOS[
+        formato
     ]
 
 
@@ -80,9 +117,18 @@ async def subir_imagen_producto(
     )
 
 
-    ruta.write_bytes(
-        contenido
-    )
+    try:
+
+        ruta.write_bytes(
+            contenido
+        )
+
+    except OSError:
+
+        raise HTTPException(
+            status_code=500,
+            detail="No se pudo guardar la imagen"
+        )
 
 
     return {
