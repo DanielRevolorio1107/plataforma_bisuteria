@@ -1,7 +1,13 @@
-<app-navbar></app-navbar>
+@if (!esRutaAdmin()) {
 
-<main>
-  <router-outlet></router-outlet>
-</main>
+  <app-navbar />
 
-<app-footer></app-footer>
+}
+
+<router-outlet />
+
+@if (!esRutaAdmin()) {
+
+  <app-footer />
+
+}
