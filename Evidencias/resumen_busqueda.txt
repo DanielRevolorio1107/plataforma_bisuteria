@@ -1,0 +1,34 @@
+EVALUACIÓN DE LA BÚSQUEDA INTELIGENTE
+
+Catálogo evaluado:
+12 productos activos.
+
+Método:
+Se realizaron 10 consultas nuevas que no fueron utilizadas
+durante el ajuste del algoritmo de búsqueda.
+
+Resultados:
+Resultados mostrados: 25
+Resultados considerados relevantes: 20
+
+Cálculo:
+20 / 25 x 100 = 80%
+
+Objetivo del proyecto:
+Obtener al menos 80% de resultados relevantes.
+
+Resultado:
+80%
+
+Conclusión:
+El sistema alcanzó el objetivo establecido de obtener al menos
+80% de resultados relevantes en la prueba independiente de
+validación.
+
+Prueba de desarrollo previa:
+90% de resultados relevantes.
+
+Tecnología utilizada:
+Sentence Transformers con el modelo
+paraphrase-multilingual-MiniLM-L12-v2, combinado con filtros
+estructurados de categoría, color, estilo y material.

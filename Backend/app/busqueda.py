@@ -1,3 +1,5 @@
+import re
+import unicodedata
 from threading import Lock
 
 from sentence_transformers import SentenceTransformer
@@ -15,6 +17,162 @@ UMBRAL_SIMILITUD = 0.35
 cache_embeddings = {}
 
 cache_lock = Lock()
+
+
+def normalizar_texto(
+    texto: str
+) -> str:
+
+    texto = texto.lower().strip()
+
+    texto = unicodedata.normalize(
+        "NFD",
+        texto
+    )
+
+    texto = "".join(
+        caracter
+        for caracter in texto
+        if unicodedata.category(caracter) != "Mn"
+    )
+
+    return texto
+
+
+def obtener_tokens(
+    texto: str
+) -> list[str]:
+
+    texto = normalizar_texto(
+        texto
+    )
+
+    tokens = re.findall(
+        r"[a-z0-9]+",
+        texto
+    )
+
+    palabras_vacias = {
+        "de",
+        "del",
+        "la",
+        "el",
+        "los",
+        "las",
+        "un",
+        "una",
+        "unos",
+        "unas",
+        "para",
+        "con",
+        "y",
+        "o",
+        "en"
+    }
+
+    return [
+        token
+        for token in tokens
+        if token not in palabras_vacias
+    ]
+
+
+def obtener_raiz_genero(
+    token: str
+) -> str:
+
+    if (
+        len(token) >= 6
+        and token.endswith(
+            ("os", "as")
+        )
+    ):
+        return token[:-2]
+
+    if (
+        len(token) >= 6
+        and token.endswith(
+            ("o", "a")
+        )
+    ):
+        return token[:-1]
+
+    return token
+
+
+def tokens_coinciden(
+    token_consulta: str,
+    token_valor: str
+) -> bool:
+
+    if token_consulta == token_valor:
+        return True
+
+    if (
+        len(token_consulta) >= 4
+        and len(token_valor) >= 4
+    ):
+
+        if (
+            token_valor.startswith(
+                token_consulta
+            )
+            or token_consulta.startswith(
+                token_valor
+            )
+        ):
+            return True
+
+    raiz_consulta = obtener_raiz_genero(
+        token_consulta
+    )
+
+    raiz_valor = obtener_raiz_genero(
+        token_valor
+    )
+
+    if (
+        raiz_consulta == raiz_valor
+        and len(raiz_consulta) >= 4
+    ):
+        return True
+
+    return False
+
+
+def valor_aparece_en_consulta(
+    consulta: str,
+    valor: str | None
+) -> bool:
+
+    if not valor:
+        return False
+
+    tokens_consulta = obtener_tokens(
+        consulta
+    )
+
+    tokens_valor = obtener_tokens(
+        str(valor)
+    )
+
+    if (
+        not tokens_consulta
+        or not tokens_valor
+    ):
+        return False
+
+    for token_consulta in tokens_consulta:
+
+        for token_valor in tokens_valor:
+
+            if tokens_coinciden(
+                token_consulta,
+                token_valor
+            ):
+                return True
+
+    return False
 
 
 def crear_texto_producto(
@@ -37,7 +195,185 @@ def crear_texto_producto(
         if campo
     ]
 
-    return " ".join(campos_validos)
+    return " ".join(
+        campos_validos
+    )
+
+
+def obtener_valores_unicos(
+    productos: list,
+    atributo: str
+) -> list[str]:
+
+    valores = {
+        str(valor).strip()
+        for producto in productos
+        if (
+            valor := getattr(
+                producto,
+                atributo,
+                None
+            )
+        )
+    }
+
+    return list(valores)
+
+
+def detectar_filtros(
+    consulta: str,
+    productos: list,
+    categorias_por_producto: dict[int, str]
+) -> dict[str, list[str]]:
+
+    categorias = list(
+        set(
+            categorias_por_producto.values()
+        )
+    )
+
+    colores = obtener_valores_unicos(
+        productos,
+        "color"
+    )
+
+    estilos = obtener_valores_unicos(
+        productos,
+        "estilo"
+    )
+
+    materiales = obtener_valores_unicos(
+        productos,
+        "material"
+    )
+
+    categorias_detectadas = [
+        categoria
+        for categoria in categorias
+        if valor_aparece_en_consulta(
+            consulta,
+            categoria
+        )
+    ]
+
+    colores_detectados = [
+        color
+        for color in colores
+        if valor_aparece_en_consulta(
+            consulta,
+            color
+        )
+    ]
+
+    estilos_detectados = [
+        estilo
+        for estilo in estilos
+        if valor_aparece_en_consulta(
+            consulta,
+            estilo
+        )
+    ]
+
+    materiales_detectados = [
+        material
+        for material in materiales
+        if valor_aparece_en_consulta(
+            consulta,
+            material
+        )
+    ]
+
+    return {
+        "categorias":
+            categorias_detectadas,
+
+        "colores":
+            colores_detectados,
+
+        "estilos":
+            estilos_detectados,
+
+        "materiales":
+            materiales_detectados
+    }
+
+
+def valor_esta_en_lista(
+    valor: str | None,
+    valores: list[str]
+) -> bool:
+
+    if not valor:
+        return False
+
+    valor_normalizado = normalizar_texto(
+        str(valor)
+    )
+
+    return any(
+        valor_normalizado
+        == normalizar_texto(item)
+        for item in valores
+    )
+
+
+def filtrar_productos(
+    productos: list,
+    categorias_por_producto: dict[int, str],
+    filtros: dict[str, list[str]]
+) -> list:
+
+    productos_filtrados = []
+
+    for producto in productos:
+
+        categoria = (
+            categorias_por_producto.get(
+                producto.id_producto
+            )
+        )
+
+        if (
+            filtros["categorias"]
+            and not valor_esta_en_lista(
+                categoria,
+                filtros["categorias"]
+            )
+        ):
+            continue
+
+        if (
+            filtros["colores"]
+            and not valor_esta_en_lista(
+                producto.color,
+                filtros["colores"]
+            )
+        ):
+            continue
+
+        if (
+            filtros["estilos"]
+            and not valor_esta_en_lista(
+                producto.estilo,
+                filtros["estilos"]
+            )
+        ):
+            continue
+
+        if (
+            filtros["materiales"]
+            and not valor_esta_en_lista(
+                producto.material,
+                filtros["materiales"]
+            )
+        ):
+            continue
+
+        productos_filtrados.append(
+            producto
+        )
+
+    return productos_filtrados
 
 
 def obtener_vectores_productos(
@@ -55,24 +391,7 @@ def obtener_vectores_productos(
         for producto in productos
     ]
 
-    ids_actuales = {
-        producto.id_producto
-        for producto in productos
-    }
-
     with cache_lock:
-
-        ids_cache = list(
-            cache_embeddings.keys()
-        )
-
-        for id_producto in ids_cache:
-
-            if id_producto not in ids_actuales:
-
-                del cache_embeddings[
-                    id_producto
-                ]
 
         productos_por_calcular = []
         textos_por_calcular = []
@@ -140,9 +459,30 @@ def buscar_productos_semanticos(
     if not consulta or not productos:
         return []
 
+    filtros = detectar_filtros(
+        consulta,
+        productos,
+        categorias_por_producto
+    )
+
+    hay_filtros = any(
+        filtros.values()
+    )
+
+    productos_candidatos = (
+        filtrar_productos(
+            productos,
+            categorias_por_producto,
+            filtros
+        )
+    )
+
+    if not productos_candidatos:
+        return []
+
     vectores_productos = (
         obtener_vectores_productos(
-            productos,
+            productos_candidatos,
             categorias_por_producto
         )
     )
@@ -158,7 +498,7 @@ def buscar_productos_semanticos(
 
     resultados = list(
         zip(
-            productos,
+            productos_candidatos,
             similitudes
         )
     )
@@ -169,10 +509,17 @@ def buscar_productos_semanticos(
         reverse=True
     )
 
+    if hay_filtros:
+
+        return resultados[
+            :limite
+        ]
+
     resultados_relevantes = [
         resultado
         for resultado in resultados
-        if resultado[1] >= UMBRAL_SIMILITUD
+        if resultado[1]
+        >= UMBRAL_SIMILITUD
     ]
 
     return resultados_relevantes[

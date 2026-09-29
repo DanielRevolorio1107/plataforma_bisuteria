@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "C:\Plataforma bisutería\Backend\evaluar_busqueda.py", line 1, in <module>
+    from sqlalchemy import select
+ModuleNotFoundError: No module named 'sqlalchemy'

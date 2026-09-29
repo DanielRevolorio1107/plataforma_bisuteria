@@ -6,16 +6,16 @@ from app.busqueda import buscar_productos_semanticos
 
 
 CONSULTAS = [
-    "anillo elegante",
-    "pulsera dorada",
-    "collar plateado",
-    "accesorio para regalo",
-    "bisutería elegante",
-    "pulsera casual",
-    "collar dorado",
-    "anillo plateado",
-    "accesorio elegante",
-    "joyería para ocasión especial"
+    "aretes plateados",
+    "anillo rosa",
+    "pulsera minimalista",
+    "collar casual",
+    "aretes para uso diario",
+    "accesorio dorado para evento",
+    "joya rosa para uso diario",
+    "algo minimalista y plateado",
+    "collar de acero",
+    "regalo elegante dorado"
 ]
 
 
@@ -54,19 +54,26 @@ def ejecutar_evaluacion():
         }
 
 
+        print()
+        print(
+            f"Productos activos evaluados: "
+            f"{len(productos)}"
+        )
+
+
         for numero, consulta in enumerate(
             CONSULTAS,
             start=1
         ):
 
             print()
-            print("=" * 60)
+            print("=" * 65)
 
             print(
                 f"{numero}. Búsqueda: {consulta}"
             )
 
-            print("=" * 60)
+            print("=" * 65)
 
 
             resultados = buscar_productos_semanticos(
@@ -90,7 +97,7 @@ def ejecutar_evaluacion():
 
             for posicion, (
                 producto,
-                similitud
+                puntuacion
             ) in enumerate(
                 resultados,
                 start=1
@@ -114,23 +121,20 @@ def ejecutar_evaluacion():
                 )
 
                 print(
-                    f"   Material: "
-                    f"{producto.material}"
+                    f"   Material: {producto.material}"
                 )
 
                 print(
-                    f"   Color: "
-                    f"{producto.color}"
+                    f"   Color: {producto.color}"
                 )
 
                 print(
-                    f"   Estilo: "
-                    f"{producto.estilo}"
+                    f"   Estilo: {producto.estilo}"
                 )
 
                 print(
-                    f"   Similitud: "
-                    f"{similitud:.2%}"
+                    f"   Puntuación: "
+                    f"{puntuacion:.2%}"
                 )
 
                 print()
