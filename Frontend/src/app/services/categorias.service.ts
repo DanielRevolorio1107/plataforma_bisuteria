@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_URL } from '../config/api.config';
 
 
 export interface Categoria {
@@ -30,7 +31,7 @@ export class CategoriasService {
   private http = inject(HttpClient);
 
   private apiUrl =
-    'http://127.0.0.1:8000/categorias/';
+  `${API_URL}/categorias/`;
 
 
   obtenerCategorias(): Observable<Categoria[]> {

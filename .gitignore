@@ -1,13 +1,14 @@
 # Python
 Backend/venv/
 Backend/.env
+Backend/uploads/
 **/__pycache__/
 *.pyc
 
 # Angular / Node
-frontend/node_modules/
-frontend/dist/
-frontend/.angular/
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.angular/
 
 # Variables de entorno
 .env

@@ -1,3 +1,4 @@
+import os
 from io import BytesIO
 from pathlib import Path
 from uuid import uuid4
@@ -25,14 +26,31 @@ router = APIRouter(
 )
 
 
-CARPETA_PRODUCTOS = Path(
-    "uploads/productos"
+BASE_DIR = (
+    Path(__file__)
+    .resolve()
+    .parent
+    .parent
+    .parent
+)
+
+
+CARPETA_PRODUCTOS = (
+    BASE_DIR
+    / "uploads"
+    / "productos"
 )
 
 CARPETA_PRODUCTOS.mkdir(
     parents=True,
     exist_ok=True
 )
+
+
+PUBLIC_BACKEND_URL = os.getenv(
+    "PUBLIC_BACKEND_URL",
+    "http://127.0.0.1:8000"
+).rstrip("/")
 
 
 FORMATOS_PERMITIDOS = {
@@ -67,7 +85,10 @@ async def subir_imagen_producto(
 
         raise HTTPException(
             status_code=400,
-            detail="La imagen no puede superar los 5 MB"
+            detail=(
+                "La imagen no puede "
+                "superar los 5 MB"
+            )
         )
 
 
@@ -89,7 +110,10 @@ async def subir_imagen_producto(
 
         raise HTTPException(
             status_code=400,
-            detail="El archivo no es una imagen válida"
+            detail=(
+                "El archivo no es "
+                "una imagen válida"
+            )
         )
 
 
@@ -97,7 +121,10 @@ async def subir_imagen_producto(
 
         raise HTTPException(
             status_code=400,
-            detail="Solo se permiten imágenes JPG, PNG o WEBP"
+            detail=(
+                "Solo se permiten imágenes "
+                "JPG, PNG o WEBP"
+            )
         )
 
 
@@ -112,8 +139,8 @@ async def subir_imagen_producto(
 
 
     ruta = (
-        CARPETA_PRODUCTOS /
-        nombre_archivo
+        CARPETA_PRODUCTOS
+        / nombre_archivo
     )
 
 
@@ -127,12 +154,17 @@ async def subir_imagen_producto(
 
         raise HTTPException(
             status_code=500,
-            detail="No se pudo guardar la imagen"
+            detail=(
+                "No se pudo guardar "
+                "la imagen"
+            )
         )
 
 
     return {
-        "imagen_url":
-            "http://127.0.0.1:8000/"
-            f"media/productos/{nombre_archivo}"
+        "imagen_url": (
+            f"{PUBLIC_BACKEND_URL}"
+            f"/media/productos/"
+            f"{nombre_archivo}"
+        )
     }

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Producto } from './productos.service';
+import { API_URL } from '../config/api.config';
 
 
 export interface RecomendacionResultado {
@@ -19,7 +20,7 @@ export class RecomendacionesService {
   private http = inject(HttpClient);
 
   private apiUrl =
-    'http://127.0.0.1:8000/recomendaciones/';
+  `${API_URL}/recomendaciones/`;
 
 
   obtenerRecomendaciones(

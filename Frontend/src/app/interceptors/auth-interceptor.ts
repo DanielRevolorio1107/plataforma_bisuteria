@@ -18,6 +18,10 @@ import {
   AuthService
 } from '../services/auth.service';
 
+import {
+  API_URL
+} from '../config/api.config';
+
 
 export const authInterceptor: HttpInterceptorFn =
   (req, next) => {
@@ -31,7 +35,7 @@ export const authInterceptor: HttpInterceptorFn =
 
     const esBackend =
       req.url.startsWith(
-        'http://127.0.0.1:8000/'
+        `${API_URL}/`
       );
 
 
