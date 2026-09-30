@@ -20,3 +20,7 @@ Frontend/.angular/
 # Sistema
 .DS_Store
 Thumbs.db
+
+# Respaldos de base de datos
+*.dump
+*.backup
