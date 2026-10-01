@@ -3,6 +3,11 @@ from io import BytesIO
 from pathlib import Path
 from uuid import uuid4
 
+from azure.identity import DefaultAzureCredential
+from azure.storage.blob import (
+    BlobServiceClient,
+    ContentSettings
+)
 from fastapi import (
     APIRouter,
     Depends,
@@ -10,7 +15,6 @@ from fastapi import (
     HTTPException,
     UploadFile
 )
-
 from PIL import (
     Image,
     UnidentifiedImageError
@@ -47,17 +51,52 @@ CARPETA_PRODUCTOS.mkdir(
 )
 
 
-PUBLIC_BACKEND_URL = os.getenv(
-    "PUBLIC_BACKEND_URL",
-    "http://127.0.0.1:8000"
-).rstrip("/")
+STORAGE_ACCOUNT_URL = os.getenv(
+    "STORAGE_ACCOUNT_URL"
+)
+
+STORAGE_CONTAINER = os.getenv(
+    "STORAGE_CONTAINER",
+    "productos"
+)
+
+AZURE_CLIENT_ID = os.getenv(
+    "AZURE_CLIENT_ID"
+)
 
 
 FORMATOS_PERMITIDOS = {
-    "JPEG": ".jpg",
-    "PNG": ".png",
-    "WEBP": ".webp"
+    "JPEG": {
+        "extension": ".jpg",
+        "content_type": "image/jpeg"
+    },
+    "PNG": {
+        "extension": ".png",
+        "content_type": "image/png"
+    },
+    "WEBP": {
+        "extension": ".webp",
+        "content_type": "image/webp"
+    }
 }
+
+
+def crear_blob_service_client():
+
+    if not STORAGE_ACCOUNT_URL:
+
+        return None
+
+
+    credential = DefaultAzureCredential(
+        managed_identity_client_id=AZURE_CLIENT_ID
+    )
+
+
+    return BlobServiceClient(
+        account_url=STORAGE_ACCOUNT_URL,
+        credential=credential
+    )
 
 
 @router.post("/producto")
@@ -130,7 +169,11 @@ async def subir_imagen_producto(
 
     extension = FORMATOS_PERMITIDOS[
         formato
-    ]
+    ]["extension"]
+
+    content_type = FORMATOS_PERMITIDOS[
+        formato
+    ]["content_type"]
 
 
     nombre_archivo = (
@@ -138,33 +181,77 @@ async def subir_imagen_producto(
     )
 
 
-    ruta = (
-        CARPETA_PRODUCTOS
-        / nombre_archivo
-    )
+    if STORAGE_ACCOUNT_URL:
 
+        try:
 
-    try:
+            blob_service_client = (
+                crear_blob_service_client()
+            )
 
-        ruta.write_bytes(
-            contenido
+            blob_client = (
+                blob_service_client
+                .get_blob_client(
+                    container=STORAGE_CONTAINER,
+                    blob=nombre_archivo
+                )
+            )
+
+            blob_client.upload_blob(
+                contenido,
+                overwrite=False,
+                content_settings=ContentSettings(
+                    content_type=content_type
+                )
+            )
+
+            imagen_url = (
+                f"{STORAGE_ACCOUNT_URL}/"
+                f"{STORAGE_CONTAINER}/"
+                f"{nombre_archivo}"
+            )
+
+        except Exception:
+
+            raise HTTPException(
+                status_code=500,
+                detail=(
+                    "No se pudo guardar "
+                    "la imagen en Azure"
+                )
+            )
+
+    else:
+
+        ruta = (
+            CARPETA_PRODUCTOS
+            / nombre_archivo
         )
 
-    except OSError:
+        try:
 
-        raise HTTPException(
-            status_code=500,
-            detail=(
-                "No se pudo guardar "
-                "la imagen"
+            ruta.write_bytes(
+                contenido
             )
+
+        except OSError:
+
+            raise HTTPException(
+                status_code=500,
+                detail=(
+                    "No se pudo guardar "
+                    "la imagen"
+                )
+            )
+
+
+        imagen_url = (
+            "http://127.0.0.1:8000"
+            f"/media/productos/"
+            f"{nombre_archivo}"
         )
 
 
     return {
-        "imagen_url": (
-            f"{PUBLIC_BACKEND_URL}"
-            f"/media/productos/"
-            f"{nombre_archivo}"
-        )
+        "imagen_url": imagen_url
     }
